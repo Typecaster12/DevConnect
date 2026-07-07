@@ -1,4 +1,4 @@
-import Feed from "./Feed";
+import Feed from "./Feed/Feed";
 import LeftBar from "../LeftSideBar/LeftBar";
 import RightBar from "../RightSideBar/RightBar";
 

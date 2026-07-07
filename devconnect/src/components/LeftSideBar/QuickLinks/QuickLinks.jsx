@@ -6,7 +6,7 @@ import {
 } from "@/components/ui/card";
 
 import QuickLinkItem from "./QuickLinkItem";
-import mockUser from "@/mock/mockUser";
+import mockUsers from "@/mock/mockUser";
 
 const QuickLinks = () => {
     return (
@@ -22,16 +22,8 @@ const QuickLinks = () => {
 
             <CardContent className="space-y-2">
 
-                {/* <QuickLinkItem title="Saved Posts" />
-
-                <QuickLinkItem title="My Projects" />
-
-                <QuickLinkItem title="My Skills" />
-
-                <QuickLinkItem title="Bookmarks" /> */}
-
                 {
-                    mockUser.quickLinks.map((item) => (
+                    mockUsers[1].quickLinks.map((item) => (
                         <QuickLinkItem
                             key={item.id}
                             item={item}

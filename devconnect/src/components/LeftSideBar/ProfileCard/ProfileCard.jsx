@@ -3,7 +3,8 @@ import {
     CardContent,
 } from "@/components/ui/card";
 
-import mockUser from "@/mock/mockUser";
+// import mockUsers from "@/mock/mockUser";
+import mockUsers from "@/mock/mockUser";
 import ProfileHeader from "./ProfileHeader";
 import ProfileStats from "./ProfileStats";
 import ProfileActions from "./ProfileActions";
@@ -15,9 +16,9 @@ const ProfileCard = () => {
 
             <CardContent className="p-6">
 
-                <ProfileHeader userInfo={mockUser.personalInfo} />
+                <ProfileHeader userInfo={mockUsers[1].personalInfo} />
 
-                <ProfileStats stats={mockUser.stats}/>
+                <ProfileStats stats={mockUsers[1].stats} />
 
                 <ProfileActions />
 
