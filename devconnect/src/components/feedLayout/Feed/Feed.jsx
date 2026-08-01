@@ -8,7 +8,7 @@ import mockUsers from "@/mock/mockUser";
 
 const Feed = () => {
     //assuming user 1 is logedin;
-    const currentUser = mockUsers[1]; //Harsh
+    const currentUser = mockUsers[0]; //Harsh, temp user must be matched, currently user on 0th index is logged in
 
     //lifted state;
     const [posts, setPosts] = useState(mockPosts);

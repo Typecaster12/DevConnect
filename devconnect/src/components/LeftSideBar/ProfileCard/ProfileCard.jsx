@@ -16,9 +16,9 @@ const ProfileCard = () => {
 
             <CardContent className="p-6">
 
-                <ProfileHeader userInfo={mockUsers[1].personalInfo} />
+                <ProfileHeader userInfo={mockUsers[0].personalInfo} />
 
-                <ProfileStats stats={mockUsers[1].stats} />
+                <ProfileStats stats={mockUsers[0].stats} />
 
                 <ProfileActions />
 

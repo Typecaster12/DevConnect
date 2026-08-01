@@ -16,6 +16,9 @@ const mockUsers = [
             location: "Lucknow, India",
         },
 
+        // Stores ids of all friends
+        friends: [],
+
         stats: {
             followers: 120,
             following: 80,
@@ -69,6 +72,8 @@ const mockUsers = [
             location: "Delhi, India",
         },
 
+        friends: [],
+
         stats: {
             followers: 340,
             following: 180,
@@ -100,6 +105,8 @@ const mockUsers = [
 
             location: "Bengaluru, India",
         },
+
+        friends: [],
 
         stats: {
             followers: 890,
@@ -133,6 +140,8 @@ const mockUsers = [
             location: "Pune, India",
         },
 
+        friends: [],
+
         stats: {
             followers: 520,
             following: 143,
@@ -164,6 +173,8 @@ const mockUsers = [
 
             location: "Hyderabad, India",
         },
+
+        friends: [],
 
         stats: {
             followers: 760,
