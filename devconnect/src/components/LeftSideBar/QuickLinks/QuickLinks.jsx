@@ -23,7 +23,7 @@ const QuickLinks = () => {
             <CardContent className="space-y-2">
 
                 {
-                    mockUsers[1].quickLinks.map((item) => (
+                    mockUsers[0].quickLinks.map((item) => (
                         <QuickLinkItem
                             key={item.id}
                             item={item}

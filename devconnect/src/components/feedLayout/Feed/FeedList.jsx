@@ -5,20 +5,51 @@ import {
     AvatarImage,
 } from "@/components/ui/avatar";
 import mockUsers from "@/mock/mockUser";
+// import { post } from "node_modules/axios/index.cjs";
 
-const FeedList = ({ posts }) => {
-    if (posts.length === 0) {
-        return (
-            <div className="rounded-xl border border-dashed p-10 text-center">
-                <h2 className="text-xl font-semibold">No posts yet</h2>
+//here we have to replace react fetching with express's api;
+//express api
+// import { fetchUserPost } from "@/Api/postApi";
+// import { useEffect, useState } from "react";
 
-                <p className="mt-2 text-muted-foreground">
-                    Create your first post to get started.
-                </p>
-            </div>
-        );
-    }
+const FeedList = ({ posts, isLoading }) => {
+    // console.log("from express: ", fetchUserPost);
+    //will get replaced by tanstack/axios in future once express is done;
+    // const [postss, setPostss] = useState();
+    // const [isLoading, setIsLoading] = useState(true);
 
+    // useEffect(() => {
+    //     const getPost = async () => {
+    //         try {
+    //             const data = await fetchUserPost();
+    //             // console.log("data is: ", data);
+    //             setPostss(data.posts);
+    //             // console.log("State data: ", postss)
+    //         } catch (err) {
+    //             console.log("Some error occured while fetching posts: ", err.message);
+    //         } finally {
+    //             setIsLoading(false);
+    //         }
+    //     }
+
+    //     // console.log("Postss: ", postss);
+    //     // console.log("getPost: ", getPost);
+    // }, []);
+
+    // if (posts.length === 0) {
+    //     return (
+    //         <div className="rounded-xl border border-dashed p-10 text-center">
+    //             <h2 className="text-xl font-semibold">No posts yet</h2>
+
+    //             <p className="mt-2 text-muted-foreground">
+    //                 Create your first post to get started.
+    //             </p>
+    //         </div>
+    //     );
+    // }
+
+    // console.log("posts: ", posts)
+    // console.log(posts.length)
     return (
         <div className="space-y-5">
             {posts.map((post) => {

@@ -1,0 +1,28 @@
+import express from "express";
+import cors from "cors";
+import morgan from "morgan";
+import router from "./routes/router.js";
+
+
+const app = express();
+
+// Middlewares
+app.use(cors({
+    origin: "http://localhost:5173",
+}));
+
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(morgan("dev"));
+
+
+//routes
+// app.use("/", router);
+app.use("/mock", router);
+
+//wildcard route;
+app.use((req, res) => {
+    res.status(404).send("No such page found, Page 404.")
+});
+
+export default app;
