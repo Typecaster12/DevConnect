@@ -12,7 +12,7 @@ import mockUsers from "@/mock/mockUser";
 // import { fetchUserPost } from "@/Api/postApi";
 // import { useEffect, useState } from "react";
 
-const FeedList = ({ posts, isLoading }) => {
+const FeedList = ({ posts }) => {
     // console.log("from express: ", fetchUserPost);
     //will get replaced by tanstack/axios in future once express is done;
     // const [postss, setPostss] = useState();
@@ -52,7 +52,7 @@ const FeedList = ({ posts, isLoading }) => {
     // console.log(posts.length)
     return (
         <div className="space-y-5">
-            {posts.map((post) => {
+            {posts?.map((post) => {
                 const author = mockUsers.find(
                     (user) => user.id === post.authorId
                 );

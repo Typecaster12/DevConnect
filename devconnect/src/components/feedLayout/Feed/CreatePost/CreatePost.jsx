@@ -1,7 +1,8 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import PostInput from "./PostInput";
 
-const CreatePost = ({onCreatePost}) => {
+//onCreatePost is from Feed.jsx
+const CreatePost = ({ onCreatePost }) => {
     return (
         <Card className="shadow-sm">
 
@@ -18,8 +19,8 @@ const CreatePost = ({onCreatePost}) => {
             </CardHeader>
 
             <CardContent>
-
-                <PostInput onCreatePost={onCreatePost}/>
+                {/* takes main input and then we will post that input to express from here */}
+                <PostInput onCreatePost={onCreatePost} />
 
             </CardContent>
 

@@ -10,9 +10,7 @@ export const fetchUserPost = async () => {
         if (!response.ok) {
             throw new Error("Failed to fetch posts.");
         }
-
         const data = await response.json();
-
         return data;
 
     } catch (error) {
@@ -22,3 +20,35 @@ export const fetchUserPost = async () => {
         throw error;
     }
 };
+
+export const createUserPost = async (content) => {
+    try {
+        //here response holds http response
+        //if response.ok becomes true, then we will get our json data;
+        const response = await fetch(`${BASE_URL}/mock/mockPost`, {
+
+            method: "POST",
+
+            headers: {
+                "Content-Type": "application/json",
+            },
+
+            body: JSON.stringify({
+                content,
+            }),
+
+        });
+
+        if (!response.ok) {
+            throw new Error("Failed to create post.");
+        }
+
+        //our json data;
+        const data = await response.json();
+        await fetchUserPost();
+        return data;
+    } catch (err) {
+        console.error("Error Creating Post:", err);
+        throw err;
+    }
+}
