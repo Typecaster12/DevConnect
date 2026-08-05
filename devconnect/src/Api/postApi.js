@@ -1,6 +1,7 @@
 //to fetch the post already exixts from express;\
 const BASE_URL = "http://localhost:5000";
 
+//to get existing posts of the users;
 export const fetchUserPost = async () => {
     try {
 
@@ -21,6 +22,7 @@ export const fetchUserPost = async () => {
     }
 };
 
+//to create new posts;
 export const createUserPost = async (content) => {
     try {
         //here response holds http response

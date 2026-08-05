@@ -25,6 +25,7 @@ export const fetchMockPost = (req, res) => {
     }
 }
 
+//for creating new post;
 export const createUserPost = (req, res) => {
     //we will take input(the post data which user will enter);
     //  const newPost = {
@@ -71,6 +72,4 @@ export const createUserPost = (req, res) => {
             error: err.message,
         });
     }
-
-
 };

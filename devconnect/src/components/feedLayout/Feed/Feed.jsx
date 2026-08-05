@@ -1,18 +1,11 @@
 import { useEffect, useState } from "react";
 import CreatePost from "./CreatePost/CreatePost";
-// import mockPosts from "@/mock/mockPosts";
 import FeedList from "./FeedList";
-// import { mockUsers } from "@/mock/mockPosts";
-// import mockUser from "@/mock/mockUser";
-import mockUsers from "@/mock/mockUser";
+// import mockUsers from "@/mock/mockUser";
 import { createUserPost, fetchUserPost } from "@/Api/postApi";
 import LoadingSpinner from "@/components/ui/loadingSpinner";
 
 const Feed = () => {
-    //base url;
-    // const BASE_URL = "http://localhost:5000";
-    //lifted state;
-    // const [posts, setPosts] = useState(mockPosts);
     const [posts, setPosts] = useState([]);
     const [isLoading, setIsLoading] = useState(true); //for loading state;
 
@@ -41,7 +34,7 @@ const Feed = () => {
         return <LoadingSpinner />
     }
     //assuming user 1 is logedin;
-    const currentUser = mockUsers[0]; //Harsh, temp user must be matched, currently user on 0th index is logged in
+    // const currentUser = mockUsers[0]; //Harsh, temp user must be matched, currently user on 0th index is logged in
 
 
     //function to handle new post creation;
