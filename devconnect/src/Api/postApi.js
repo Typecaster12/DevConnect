@@ -54,3 +54,22 @@ export const createUserPost = async (content) => {
         throw err;
     }
 }
+
+export const deleteUserPost = async (postId) => {
+    try {
+        const response = await fetch(`${BASE_URL}/mock/mockPost/${postId}`, {
+            method: "DELETE",
+        });
+
+        if (!response.ok) {
+            throw new Error("Failed to delete the post.");
+        }
+
+        const data = await response.json();
+        return data;
+    } catch (error) {
+
+        console.error("Error deleting post:", error);
+        throw error;
+    }
+}

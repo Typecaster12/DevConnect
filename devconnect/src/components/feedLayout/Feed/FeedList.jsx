@@ -1,55 +1,19 @@
-import { Heart, MessageCircle, Repeat2 } from "lucide-react";
+import { Heart, MessageCircle, Repeat2, Ellipsis, Pencil, Trash2 } from "lucide-react";
 import {
     Avatar,
     AvatarFallback,
     AvatarImage,
 } from "@/components/ui/avatar";
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+
 import mockUsers from "@/mock/mockUser";
-// import { post } from "node_modules/axios/index.cjs";
 
-//here we have to replace react fetching with express's api;
-//express api
-// import { fetchUserPost } from "@/Api/postApi";
-// import { useEffect, useState } from "react";
-
-const FeedList = ({ posts }) => {
-    // console.log("from express: ", fetchUserPost);
-    //will get replaced by tanstack/axios in future once express is done;
-    // const [postss, setPostss] = useState();
-    // const [isLoading, setIsLoading] = useState(true);
-
-    // useEffect(() => {
-    //     const getPost = async () => {
-    //         try {
-    //             const data = await fetchUserPost();
-    //             // console.log("data is: ", data);
-    //             setPostss(data.posts);
-    //             // console.log("State data: ", postss)
-    //         } catch (err) {
-    //             console.log("Some error occured while fetching posts: ", err.message);
-    //         } finally {
-    //             setIsLoading(false);
-    //         }
-    //     }
-
-    //     // console.log("Postss: ", postss);
-    //     // console.log("getPost: ", getPost);
-    // }, []);
-
-    // if (posts.length === 0) {
-    //     return (
-    //         <div className="rounded-xl border border-dashed p-10 text-center">
-    //             <h2 className="text-xl font-semibold">No posts yet</h2>
-
-    //             <p className="mt-2 text-muted-foreground">
-    //                 Create your first post to get started.
-    //             </p>
-    //         </div>
-    //     );
-    // }
-
-    // console.log("posts: ", posts)
-    // console.log(posts.length)
+const FeedList = ({ posts, onDeleteUserPost }) => {
     return (
         <div className="space-y-5">
             {posts?.map((post) => {
@@ -63,7 +27,7 @@ const FeedList = ({ posts }) => {
                         className="rounded-2xl border bg-card p-5 shadow-sm transition-all duration-200 hover:shadow-md"
                     >
                         {/* Header */}
-                        <div className="flex items-center justify-between">
+                        <div className="flex items-start justify-between">
                             <div className="flex items-center gap-3">
                                 <Avatar className="h-12 w-12">
                                     <AvatarImage
@@ -94,6 +58,30 @@ const FeedList = ({ posts }) => {
                                     </div>
                                 </div>
                             </div>
+
+                            {/* Post Options */}
+                            <DropdownMenu>
+                                <DropdownMenuTrigger asChild>
+                                    <button className="rounded-full p-2 transition-colors hover:bg-muted">
+                                        <Ellipsis className="h-5 w-5 text-muted-foreground" />
+                                    </button>
+                                </DropdownMenuTrigger>
+
+                                <DropdownMenuContent
+                                    align="end"
+                                    className="w-44"
+                                >
+                                    <DropdownMenuItem className="cursor-pointer">
+                                        <Pencil className="mr-2 h-4 w-4" />
+                                        Update Post
+                                    </DropdownMenuItem>
+
+                                    <DropdownMenuItem onClick={() => onDeleteUserPost(post.id)} className="cursor-pointer text-red-600 focus:text-red-600">
+                                        <Trash2 className="mr-2 h-4 w-4" />
+                                        Delete Post
+                                    </DropdownMenuItem>
+                                </DropdownMenuContent>
+                            </DropdownMenu>
                         </div>
 
                         {/* Content */}

@@ -27,24 +27,10 @@ export const fetchMockPost = (req, res) => {
 
 //for creating new post;
 export const createUserPost = (req, res) => {
-    //we will take input(the post data which user will enter);
-    //  const newPost = {
-    //         id: crypto.randomUUID(),
-    //         authorId: currentUser.id, 
-    //         content,
-    //         createdAt: new Date().toLocaleDateString("en-GB", {
-    //             day: "2-digit",
-    //             month: "long",
-    //             year: "numeric",
-    //         }),
-    //     };
-
-    // we will use this dataformate for post
-    //and finally frontend will fetch the data from here;
 
     try {
         //get the input from req.body;
-        const {content} = req.body;
+        const { content } = req.body;
         console.log("data from req.body: ", req.body);
         //new post template;
         const newPost = {
@@ -73,3 +59,37 @@ export const createUserPost = (req, res) => {
         });
     }
 };
+
+export const deleteUserPost = (req, res) => {
+    try {
+        //first get the id of the post;
+        const { id } = req.params;
+        console.log("Id of the post: ", id);
+
+        //will find the post of matching id;
+        // const postToBeDeleted = mockPosts.find(element => element.id === postId);
+        //as we have to delete the post and update the existing array;
+        //but we have const so that the array cannot be updated;
+        //and .filter() will create new array instead of giving new values in same array;
+        //problem with .filter() is that we are using our existing array and the the operations has been performed on that only so we cant afford creating new array with updated value;
+
+        //get the index of the post by post's id;
+        // then we will splice it;
+        const indexOfPost = mockPosts.findIndex(post => post.id === id);
+        console.log("The index of the post: ", indexOfPost);
+
+        //if we get the index from this, then we can remove that post;
+        mockPosts.splice(indexOfPost, 1); //start from that index and delete one post(which is going to be that post only);
+
+        //return the response;
+        res.status(200).json({
+            status: "Success",
+            message: "Post deleted sucessfully..."
+        });
+    } catch (err) {
+        res.status(500).json({
+            status: "Failed",
+            error: err.message,
+        })
+    }
+}
