@@ -12,8 +12,12 @@ import {
 } from "@/components/ui/dropdown-menu";
 
 import mockUsers from "@/mock/mockUser";
+import DeletePostDialog from "@/components/DialogBoxes/DeletePostDialog";
+import { useState } from "react";
 
 const FeedList = ({ posts, onDeleteUserPost }) => {
+    const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+    const [selectedPostId, setSelectedPostId] = useState(null);
     return (
         <div className="space-y-5">
             {posts?.map((post) => {
@@ -76,7 +80,13 @@ const FeedList = ({ posts, onDeleteUserPost }) => {
                                         Update Post
                                     </DropdownMenuItem>
 
-                                    <DropdownMenuItem onClick={() => onDeleteUserPost(post.id)} className="cursor-pointer text-red-600 focus:text-red-600">
+                                    <DropdownMenuItem
+                                        className="cursor-pointer text-red-600 focus:text-red-600"
+                                        onClick={() => {
+                                            setSelectedPostId(post.id);
+                                            setDeleteDialogOpen(true);
+                                        }}
+                                    >
                                         <Trash2 className="mr-2 h-4 w-4" />
                                         Delete Post
                                     </DropdownMenuItem>
@@ -111,6 +121,13 @@ const FeedList = ({ posts, onDeleteUserPost }) => {
                     </article>
                 );
             })}
+
+            <DeletePostDialog
+                open={deleteDialogOpen}
+                onOpenChange={setDeleteDialogOpen}
+                postId={selectedPostId}
+                onDeleteUserPost={onDeleteUserPost}
+            />
         </div>
     );
 };
