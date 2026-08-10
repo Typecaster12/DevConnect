@@ -104,6 +104,13 @@ export const updateUserPost = (req, res) => {
 
         //fetch user's new post's content;
         const { newPostContent } = req.body;
+        //new data should not be empty;
+        if (!newPostContent?.trim()) {
+            return res.status(400).json({
+                status: "Failed",
+                message: "Post content cannot be empty.",
+            });
+        }
 
         //finding the index;
         const postIndex = mockPosts.findIndex(post => post.id === id); //we get the index from here;
