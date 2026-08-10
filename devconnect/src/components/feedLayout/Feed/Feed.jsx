@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import CreatePost from "./CreatePost/CreatePost";
 import FeedList from "./FeedList";
-import { createUserPost, deleteUserPost, fetchUserPost } from "@/Api/postApi";
+import { createUserPost, deleteUserPost, fetchUserPost, updateUserPost } from "@/Api/postApi";
 import LoadingSpinner from "@/components/ui/loadingSpinner";
 
 const Feed = () => {
@@ -55,6 +55,15 @@ const Feed = () => {
             console.error(error);
         }
     }
+
+    const handleUpdatePost = async (postId, newPostContent) => {
+        try {
+            await updateUserPost(postId, newPostContent);
+            await getPostData();
+        } catch (error) {
+            console.log(error);
+        }
+    }
     return (
         <section className="relative">
 
@@ -65,7 +74,7 @@ const Feed = () => {
             </div>
 
             <div className="space-y-5">
-                <FeedList posts={posts} onDeleteUserPost={handleDeletePost} />
+                <FeedList posts={posts} onDeleteUserPost={handleDeletePost} onUpdateUserPost={handleUpdatePost} />
             </div>
 
         </section>

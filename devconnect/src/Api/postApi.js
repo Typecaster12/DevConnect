@@ -68,8 +68,34 @@ export const deleteUserPost = async (postId) => {
         const data = await response.json();
         return data;
     } catch (error) {
-
         console.error("Error deleting post:", error);
         throw error;
     }
 }
+
+//for post's content updation;
+export const updateUserPost = async (postId, newPostContent) => {
+    try {
+        const response = await fetch(`${BASE_URL}/mock/mockPost/${postId}`, {
+            method: "PATCH",
+
+            headers: {
+                "Content-Type": "application/json",
+            },
+
+            body: JSON.stringify({
+                newPostContent, //this is the new data we are sending to the server;
+            }),
+        });
+
+        if (!response.ok) {
+            throw new Error("Failed to update the post.");
+        }
+        const data = await response.json();
+        return data;
+
+    } catch (error) {
+        console.error("Error updating post:", error);
+        throw error;
+    }
+};
