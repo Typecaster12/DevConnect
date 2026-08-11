@@ -17,7 +17,6 @@ app.use(morgan("dev"));
 
 
 //routes
-// app.use("/", router);
 app.use("/mock", router);
 
 //wildcard route;

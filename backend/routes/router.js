@@ -1,5 +1,5 @@
 import express from 'express';
-import { createUserPost, deleteUserPost, fetchMockPost, updateUserPost } from '../controllers/serverController.js';
+import { createUserPost, deleteUserPost, fetchMockPost, getLoggedUserProfile, updateUserPost } from '../controllers/serverController.js';
 // import { checkingHome } from '../controllers/serverController.js';
 
 const router = express.Router();
@@ -14,5 +14,9 @@ router.post("/mockPost", createUserPost);
 router.delete("/mockPost/:id", deleteUserPost);
 
 //for update functionality
-router.patch("/mockPost/:id", updateUserPost)
+router.patch("/mockPost/:id", updateUserPost);
+
+
+//for logged user profile(get);
+router.get("/user", getLoggedUserProfile);
 export default router;

@@ -27,11 +27,15 @@ import QuickLinks from "./QuickLinks/QuickLinks";
 // import ProfileCard from "./ProfileCard/ProfileCard";
 // import QuickLinks from "./QuickLinks/QuickLinks";
 
-const LeftSidebar = () => {
+const LeftSidebar = ({ userProfile }) => {
+    console.log("userprofile: ", userProfile);
+
     return (
         <aside className="hidden lg:flex flex-col gap-6">
 
-            <ProfileCard />
+            {userProfile && (
+                <ProfileCard userProfile={userProfile} />
+            )}
 
             <QuickLinks />
 

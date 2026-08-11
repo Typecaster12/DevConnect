@@ -5,7 +5,7 @@ const currentUser = mockUsers[0]; //let the first user is being handle by us;
 export const fetchMockPost = (req, res) => {
     try {
         if (mockPosts.length <= 0) {
-            console.log("No post, ", mockPosts.length);
+            // console.log("No post, ", mockPosts.length);
             return res.status(200).json({
                 status: "Sucess",
                 length: mockPosts.length,
@@ -35,7 +35,7 @@ export const createUserPost = (req, res) => {
         //new post template;
         const newPost = {
             id: crypto.randomUUID(),
-            authorId: currentUser.id,
+            authorId: currentUser.id, //this is the id which will connect posts with their actual user;
             content,
             createdAt: new Date().toLocaleDateString("en-GB", {
                 day: "2-digit",
@@ -134,6 +134,46 @@ export const updateUserPost = (req, res) => {
         res.status(500).json({
             status: "Failed",
             error: err.message,
+        })
+    }
+}
+
+//for leftSideBar => to get the details of currentlogged in user;
+export const getLoggedUserProfile = (req, res) => {
+    try {
+        //get the right user;
+        const user = mockUsers.find(
+            user => user.id === currentUser.id
+        );
+
+        if (!user) {
+            return res.status(404).json({
+                status: "Failed",
+                message: "No User Found..",
+            });
+        }
+
+        //for postCount
+        const postCount = mockPosts.filter(
+            post => post.authorId === currentUser.id
+        ).length;
+
+
+        return res.status(200).json({
+            status: "Success",
+            user: {
+                ...user,
+                stats: {
+                    ...user.stats,
+                    posts: postCount,
+                },
+            },
+        });
+
+    } catch (err) {
+        return res.status(500).json({
+            status: "Failed",
+            error: err.message
         })
     }
 }

@@ -3,25 +3,23 @@ import {
     CardContent,
 } from "@/components/ui/card";
 
-// import mockUsers from "@/mock/mockUser";
-import mockUsers from "@/mock/mockUser";
 import ProfileHeader from "./ProfileHeader";
 import ProfileStats from "./ProfileStats";
 import ProfileActions from "./ProfileActions";
+// import { fetchLoggedUserDetails } from "@/Api/loggedUser";
+// import { useEffect, useState } from "react";
+// import LoadingSpinner from "@/components/ui/loadingSpinner";
 
 
-const ProfileCard = () => {
+const ProfileCard = ({ userProfile }) => {
+    console.log(userProfile)
     return (
         <Card className="shadow-sm">
 
             <CardContent className="p-6">
-
-                <ProfileHeader userInfo={mockUsers[0].personalInfo} />
-
-                <ProfileStats stats={mockUsers[0].stats} />
-
+                <ProfileHeader userInfo={userProfile?.personalInfo} />
+                <ProfileStats stats={userProfile?.stats} />
                 <ProfileActions />
-
             </CardContent>
 
         </Card>

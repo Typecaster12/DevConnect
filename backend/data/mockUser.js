@@ -20,9 +20,9 @@ const mockUsers = [
         friends: [],
 
         stats: {
-            followers: 120,
-            following: 80,
-            posts: 24,
+            followers: 0,
+            following: 0,
+            posts: 0,
         },
 
         social: {

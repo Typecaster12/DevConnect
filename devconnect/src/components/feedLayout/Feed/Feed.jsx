@@ -1,80 +1,83 @@
-import { useEffect, useState } from "react";
 import CreatePost from "./CreatePost/CreatePost";
 import FeedList from "./FeedList";
-import { createUserPost, deleteUserPost, fetchUserPost, updateUserPost } from "@/Api/postApi";
+
+import {
+    createUserPost,
+    deleteUserPost,
+    updateUserPost
+} from "@/Api/postApi";
+
 import LoadingSpinner from "@/components/ui/loadingSpinner";
 
-const Feed = () => {
-    const [posts, setPosts] = useState([]);
-    const [isLoading, setIsLoading] = useState(true); //for loading state;
+const Feed = ({
+    posts,
+    isLoading,
+    onRefreshData
+}) => {
 
-    //for fetching data;
-    const getPostData = async () => {
-        try {
-            const data = await fetchUserPost();
-            console.log(data);
-            //update the post list;
-            setPosts(data.posts); //as backend is sending posts:mockPosts which is going to be an array; of posts
-        } catch (err) {
-            console.error("Error occured while fetching posts: ", err.message);
-        } finally {
-            setIsLoading(false);
-        }
-    }
-
-    useEffect(() => {
-        //function trigger;
-        getPostData();
-    }, []);
-
-
-    //laoding state;
+    //loading state;
     if (isLoading) {
-        return <LoadingSpinner />
+        return <LoadingSpinner />;
     }
-    //assuming user 1 is logedin;
-    // const currentUser = mockUsers[0]; //Harsh, temp user must be matched, currently user on 0th index is logged in
-
 
     //function to handle new post creation;
     const handleCreatePost = async (content) => {
         try {
             await createUserPost(content);
-            await getPostData();
+
+            //ask parent to fetch latest posts + user profile;
+            await onRefreshData();
 
         } catch (error) {
-            console.error(error);
+            console.error("Error creating post: ", error);
         }
-    }
+    };
 
+    //function to handle post deletion;
     const handleDeletePost = async (postId) => {
         try {
             await deleteUserPost(postId);
-            await getPostData();
-        } catch (error) {
-            console.error(error);
-        }
-    }
 
+            //ask parent to fetch latest posts + user profile;
+            await onRefreshData();
+
+        } catch (error) {
+            console.error("Error deleting post: ", error);
+        }
+    };
+
+    //function to handle post updation;
     const handleUpdatePost = async (postId, newPostContent) => {
         try {
             await updateUserPost(postId, newPostContent);
-            await getPostData();
+
+            //ask parent to fetch latest posts + user profile;
+            await onRefreshData();
+
         } catch (error) {
-            console.log(error);
+            console.error("Error updating post: ", error);
         }
-    }
+    };
+
     return (
         <section className="relative">
 
             <div className="sticky top-20 z-20 bg-background pb-6">
 
-                <CreatePost onCreatePost={handleCreatePost} />
+                <CreatePost
+                    onCreatePost={handleCreatePost}
+                />
 
             </div>
 
             <div className="space-y-5">
-                <FeedList posts={posts} onDeleteUserPost={handleDeletePost} onUpdateUserPost={handleUpdatePost} />
+
+                <FeedList
+                    posts={posts}
+                    onDeleteUserPost={handleDeletePost}
+                    onUpdateUserPost={handleUpdatePost}
+                />
+
             </div>
 
         </section>
