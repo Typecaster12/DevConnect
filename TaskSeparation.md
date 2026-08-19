@@ -319,3 +319,15 @@ Each feature is complete only if:
 -   No console errors
 -   Components separated
 -   Easy to replace with Express later
+
+
+new task
+1. Finalize Post schema
+        ↓
+2. Create seedPosts.js
+        ↓
+3. Map each post's authorId → MongoDB User._id
+        ↓
+4. Insert posts into MongoDB
+        ↓
+5. Verify posts in Atlas
