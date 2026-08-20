@@ -1,3 +1,6 @@
+//seeding is only for seeding the demo data from array to mongodb
+//when this project is start taking actual users, this file will not be in use;
+
 import "dotenv/config";
 import mongoose from "mongoose";
 import connectDB from "../config/db.js";

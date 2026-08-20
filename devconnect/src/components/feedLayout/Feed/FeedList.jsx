@@ -11,7 +11,6 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
-import mockUsers from "@/mock/mockUser";
 import DeletePostDialog from "@/components/DialogBoxes/DeletePostDialog";
 import UpdatePostDialog from "@/components/DialogBoxes/UpdatePostDialog";
 import { useState } from "react";
@@ -30,13 +29,30 @@ const FeedList = ({ posts, onDeleteUserPost, onUpdateUserPost }) => {
 
             {posts?.map((post) => {
 
-                const author = mockUsers.find(
-                    (user) => user.id === post.authorId
-                );
+                // const author = mockUsers.find(
+                //     (user) => user.id === post.authorId
+                // );
 
+                const authorId = post?.author._id;
+                // console.log("Author's id: ", authorId);
+
+                const authorAvatar = post?.author.personalInfo.avatar
+                // console.log(authorAvatar);
+
+                const firstName = post?.author.personalInfo.firstName
+                // console.log(firstName);
+
+                const lastName = post?.author.personalInfo.lastName
+                // console.log(lastName);
+
+                const userName = post?.author.personalInfo.username
+                // console.log(userName);
+
+                const postCreateTime = post?.createdAt;
+                // console.log(postCreateTime);
                 return (
                     <article
-                        key={post.id}
+                        key={post?._id}
                         className="rounded-2xl border bg-card p-5 shadow-sm transition-all duration-200 hover:shadow-md"
                     >
                         {/* Header */}
@@ -47,13 +63,15 @@ const FeedList = ({ posts, onDeleteUserPost, onUpdateUserPost }) => {
                                 <Avatar className="h-12 w-12">
 
                                     <AvatarImage
-                                        src={author?.personalInfo.avatar}
-                                        alt={`${author?.personalInfo.firstName} ${author?.personalInfo.lastName}`}
+                                        // src={author?.personalInfo.avatar}
+                                        src={authorAvatar}
+                                        // alt={`${author?.personalInfo.firstName} ${author?.personalInfo.lastName}`}
+                                        alt={`${firstName} ${lastName}`}
                                     />
 
                                     <AvatarFallback>
-                                        {author?.personalInfo.firstName?.charAt(0)}
-                                        {author?.personalInfo.lastName?.charAt(0)}
+                                        {firstName.charAt(0)}
+                                        {lastName.charAt(0)}
                                     </AvatarFallback>
 
                                 </Avatar>
@@ -61,19 +79,19 @@ const FeedList = ({ posts, onDeleteUserPost, onUpdateUserPost }) => {
                                 <div>
 
                                     <h3 className="font-semibold leading-none">
-                                        {author?.personalInfo.firstName}{" "}
-                                        {author?.personalInfo.lastName}
+                                        {firstName}{" "}
+                                        {lastName}
                                     </h3>
 
                                     <div className="mt-1 flex items-center gap-2 text-sm text-muted-foreground">
 
                                         <span>
-                                            {author?.personalInfo.username}
+                                            {userName}
                                         </span>
 
                                         <span>•</span>
 
-                                        <span>{post.createdAt}</span>
+                                        <span>{postCreateTime}</span>
 
                                     </div>
 

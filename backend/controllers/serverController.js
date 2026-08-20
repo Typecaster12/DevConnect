@@ -1,21 +1,49 @@
 import mockPosts from "../data/mockPost.js";
 import mockUsers from "../data/mockUser.js";
+import Post from "../models/Posts.model.js";
+import User from "../models/Users.model.js";
 
 const currentUser = mockUsers[0]; //let the first user is being handle by us;
-export const fetchMockPost = (req, res) => {
-    try {
-        if (mockPosts.length <= 0) {
-            // console.log("No post, ", mockPosts.length);
-            return res.status(200).json({
-                status: "Sucess",
-                length: mockPosts.length,
-            });
-        }
+//customizing this getApi for DB storage as it currently deals with array;
+// export const fetchMockPost = (req, res) => {
+//     try {
+//         if (mockPosts.length <= 0) {
+//             // console.log("No post, ", mockPosts.length);
+//             return res.status(200).json({
+//                 status: "Sucess",
+//                 length: mockPosts.length,
+//             });
+//         }
 
-        return res.status(200).json({
-            status: "Sucess",
-            length: mockPosts.length,
-            posts: mockPosts
+//         return res.status(200).json({
+//             status: "Sucess",
+//             length: mockPosts.length,
+//             posts: mockPosts
+//         });
+//     } catch (err) {
+//         return res.status(500).json({
+//             status: "Failed",
+//             error: err.message
+//         })
+//     }
+// }
+
+const loggedUser = "6a8340cadc4371f50a62ac45";
+export const fetchPost = async (req, res) => {
+    try {
+        //find from the post;
+        const posts = await Post.find({
+            author: loggedUser
+        })
+            .populate("author")
+            .sort({ createdAt: -1 });
+
+
+        console.log(posts);
+        res.status(200).json({
+            status: "Success",
+            length: posts.length,
+            posts
         });
     } catch (err) {
         return res.status(500).json({

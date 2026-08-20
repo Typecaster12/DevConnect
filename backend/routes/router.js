@@ -1,11 +1,11 @@
 import express from 'express';
-import { createUserPost, deleteUserPost, fetchMockPost, getLoggedUserProfile, updateUserPost } from '../controllers/serverController.js';
+import { createUserPost, deleteUserPost, fetchPost, getLoggedUserProfile, updateUserPost } from '../controllers/serverController.js';
 // import { checkingHome } from '../controllers/serverController.js';
 
 const router = express.Router();
 
 // router.get("/", checkingHome);
-router.get("/mockPost", fetchMockPost);
+router.get("/mockPost", fetchPost);
 
 router.post("/mockPost", createUserPost);
 
