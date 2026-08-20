@@ -62,7 +62,7 @@ export const createUserPost = async (req, res) => {
 };
 
 //delete operation, for post;
-export const deleteUserPost = (req, res) => {
+export const deleteUserPost = async (req, res) => {
     try {
         //first get the id of the post;
         const { id } = req.params;
@@ -77,12 +77,25 @@ export const deleteUserPost = (req, res) => {
 
         //get the index of the post by post's id;
         // then we will splice it;
-        const indexOfPost = mockPosts.findIndex(post => post.id === id);
+        // const indexOfPost = mockPosts.findIndex(post => post.id === id);
         // console.log("The index of the post: ", indexOfPost);
 
         //if we get the index from this, then we can remove that post;
-        mockPosts.splice(indexOfPost, 1); //start from that index and delete one post(which is going to be that post only);
+        // mockPosts.splice(indexOfPost, 1); //start from that index and delete one post(which is going to be that post only);
 
+
+        //we will find the post's id and then delete it using findOneAndDelete;
+        const deletedPost = await Post.findOneAndDelete({
+            _id: id
+        });
+
+        //checking, if post exists or not;
+        if (!deletedPost) {
+            res.status(400).json({
+                status: "Failed",
+                message: "Post not found."
+            })
+        }
         //return the response;
         res.status(200).json({
             status: "Success",
