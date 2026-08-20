@@ -29,23 +29,19 @@ const FeedList = ({ posts, onDeleteUserPost, onUpdateUserPost }) => {
 
             {posts?.map((post) => {
 
-                // const author = mockUsers.find(
-                //     (user) => user.id === post.authorId
-                // );
-
                 const authorId = post?.author._id;
                 // console.log("Author's id: ", authorId);
 
-                const authorAvatar = post?.author.personalInfo.avatar
+                const authorAvatar = post?.author.personalInfo.avatar;
                 // console.log(authorAvatar);
 
-                const firstName = post?.author.personalInfo.firstName
+                const firstName = post?.author.personalInfo.firstName;
                 // console.log(firstName);
 
-                const lastName = post?.author.personalInfo.lastName
+                const lastName = post?.author.personalInfo.lastName;
                 // console.log(lastName);
 
-                const userName = post?.author.personalInfo.username
+                const userName = post?.author.personalInfo.username;
                 // console.log(userName);
 
                 const postCreateTime = post?.createdAt;
@@ -63,9 +59,7 @@ const FeedList = ({ posts, onDeleteUserPost, onUpdateUserPost }) => {
                                 <Avatar className="h-12 w-12">
 
                                     <AvatarImage
-                                        // src={author?.personalInfo.avatar}
                                         src={authorAvatar}
-                                        // alt={`${author?.personalInfo.firstName} ${author?.personalInfo.lastName}`}
                                         alt={`${firstName} ${lastName}`}
                                     />
 

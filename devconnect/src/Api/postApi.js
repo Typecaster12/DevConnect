@@ -47,6 +47,7 @@ export const createUserPost = async (content) => {
 
         //our json data;
         const data = await response.json();
+        console.log(data, " : This is data")
         await fetchUserPost();
         return data;
     } catch (err) {

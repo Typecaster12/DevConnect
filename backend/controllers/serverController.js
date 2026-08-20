@@ -3,32 +3,10 @@ import mockUsers from "../data/mockUser.js";
 import Post from "../models/Posts.model.js";
 import User from "../models/Users.model.js";
 
+const loggedUser = "6a8340cadc4371f50a62ac45"; //from mongodb
 const currentUser = mockUsers[0]; //let the first user is being handle by us;
 //customizing this getApi for DB storage as it currently deals with array;
-// export const fetchMockPost = (req, res) => {
-//     try {
-//         if (mockPosts.length <= 0) {
-//             // console.log("No post, ", mockPosts.length);
-//             return res.status(200).json({
-//                 status: "Sucess",
-//                 length: mockPosts.length,
-//             });
-//         }
 
-//         return res.status(200).json({
-//             status: "Sucess",
-//             length: mockPosts.length,
-//             posts: mockPosts
-//         });
-//     } catch (err) {
-//         return res.status(500).json({
-//             status: "Failed",
-//             error: err.message
-//         })
-//     }
-// }
-
-const loggedUser = "6a8340cadc4371f50a62ac45";
 export const fetchPost = async (req, res) => {
     try {
         //find from the post;
@@ -38,8 +16,6 @@ export const fetchPost = async (req, res) => {
             .populate("author")
             .sort({ createdAt: -1 });
 
-
-        console.log(posts);
         res.status(200).json({
             status: "Success",
             length: posts.length,
@@ -54,36 +30,33 @@ export const fetchPost = async (req, res) => {
 }
 
 //for creating new post;
-export const createUserPost = (req, res) => {
-
+export const createUserPost = async (req, res) => {
     try {
         //get the input from req.body;
         const { content } = req.body;
-        // console.log("data from req.body: ", req.body);
-        //new post template;
-        const newPost = {
-            id: crypto.randomUUID(),
-            authorId: currentUser.id, //this is the id which will connect posts with their actual user;
-            content,
-            createdAt: new Date().toLocaleDateString("en-GB", {
-                day: "2-digit",
-                month: "long",
-                year: "numeric",
-            }),
+
+        //validation
+        if (!content.trim()) {
+            return res.status(400).json({
+                status: "Failed",
+                message: "Post content cannot be empty.",
+            })
         }
 
-        //stores the newPost data on data base(currently in array);
-        mockPosts.unshift(newPost); //so that nwest post will be on first index always, we can use push also here;
+        await Post.create({
+            author: loggedUser,
+            content: content.trim()
+        });
 
         //once newpost created, send the response;
         res.status(201).json({ //201 shows resource created;
             status: "Success",
-            data: newPost,
+            message: "post created sucessfully.."
         });
     } catch (err) {
         res.status(500).json({
             status: "Failed",
-            error: err.message,
+            error: err.message
         });
     }
 };
