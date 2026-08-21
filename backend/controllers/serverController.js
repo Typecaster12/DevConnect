@@ -4,8 +4,7 @@ import Post from "../models/Posts.model.js";
 import User from "../models/Users.model.js";
 
 const loggedUser = "6a8340cadc4371f50a62ac45"; //from mongodb
-const currentUser = mockUsers[0]; //let the first user is being handle by us;
-//customizing this getApi for DB storage as it currently deals with array;
+const currentUser = mockUsers[0];
 
 export const fetchPost = async (req, res) => {
     try {
@@ -67,22 +66,6 @@ export const deleteUserPost = async (req, res) => {
         //first get the id of the post;
         const { id } = req.params;
 
-        //will find the post of matching id;
-        // const postToBeDeleted = mockPosts.find(element => element.id === postId);
-        //as we have to delete the post and update the existing array;
-        //but we have const so that the array cannot be updated;
-        //and .filter() will create new array instead of giving new values in same array;
-        //problem with .filter() is that we are using our existing array and the the operations has been performed on that only so we cant afford creating new array with updated value;
-
-        //get the index of the post by post's id;
-        // then we will splice it;
-        // const indexOfPost = mockPosts.findIndex(post => post.id === id);
-        // console.log("The index of the post: ", indexOfPost);
-
-        //if we get the index from this, then we can remove that post;
-        // mockPosts.splice(indexOfPost, 1); //start from that index and delete one post(which is going to be that post only);
-
-
         //we will find the post's id and then delete it using findOneAndDelete;
         const deletedPost = await Post.findOneAndDelete({
             _id: id
@@ -108,15 +91,13 @@ export const deleteUserPost = async (req, res) => {
     }
 }
 
-//update operation, we use PATCH as we are only updating the content of the post not the copmplete post card)
+
 export const updateUserPost = async (req, res) => {
     try {
-        const { id } = req.params; //we have to change this id's content;
-        //first find the post's index, and then from the index we will get that post
-        //after that we can extract the content from the post and update it;
+        const { id } = req.params;
 
         //fetch user's new post's content;
-        const { newPostContent } = req.body; 
+        const { newPostContent } = req.body;
 
         //new data should not be empty;
         if (!newPostContent?.trim()) {
@@ -150,12 +131,15 @@ export const updateUserPost = async (req, res) => {
 }
 
 //for leftSideBar => to get the details of currentlogged in user;
-export const getLoggedUserProfile = (req, res) => {
+export const getLoggedUserProfile = async (req, res) => {
     try {
-        //get the right user;
-        const user = mockUsers.find(
-            user => user.id === currentUser.id
-        );
+        // //get the right user;
+        // const user = mockUsers.find(
+        //     user => user.id === currentUser.id
+        // );
+
+        const user = await User.findById(loggedUser);
+        console.log("User for their details: ", user);
 
         if (!user) {
             return res.status(404).json({
@@ -164,22 +148,43 @@ export const getLoggedUserProfile = (req, res) => {
             });
         }
 
+        //we are counting total number of documents in from the post schema for author only
+        //this will give us exact number of posts
+        //as every post creates a document;
+        const postCount = await Post.countDocuments({
+            author: user._id
+        });
+        console.log("Post by User: ", postCount);
         //for postCount
-        const postCount = mockPosts.filter(
-            post => post.authorId === currentUser.id
-        ).length;
+        // const postCount = mockPosts.filter(
+        //     post => post.authorId === currentUser.id
+        // ).length;
 
 
-        return res.status(200).json({
+        // return res.status(200).json({
+        //     status: "Success",
+        //     user: {
+        //         ...user,
+        //         stats: {
+        //             ...user.stats,
+        //             posts: postCount,
+        //         },
+        //     },
+        // });
+
+        res.status(200).json({
             status: "Success",
-            user: {
-                ...user,
+            message: "User details fetched successfully",
+            details: {
+                ...user.toObject(), //this converts the mongoDb object to normal object
+                //as .countDocuments returns mongoDB document instead of normal js object;
+
                 stats: {
                     ...user.stats,
-                    posts: postCount,
-                },
-            },
-        });
+                    posts: postCount
+                }
+            }
+        })
 
     } catch (err) {
         return res.status(500).json({

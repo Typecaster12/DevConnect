@@ -8,7 +8,6 @@ import { fetchUserPost } from "@/Api/postApi";
 import { fetchLoggedUserDetails } from "@/Api/loggedUser";
 
 const FeedLayout = () => {
-    // console.log("🔥 FeedLayout rendered");
     //lifted state;
     const [posts, setPosts] = useState([]);
     const [userProfile, setUserProfile] = useState(null);
@@ -19,7 +18,7 @@ const FeedLayout = () => {
     const getPostData = async () => {
         try {
             const data = await fetchUserPost();
-            
+
             //update the post list;
             setPosts(data.posts || []);
 
@@ -35,9 +34,8 @@ const FeedLayout = () => {
     const getLoggedUserData = async () => {
         try {
             const data = await fetchLoggedUserDetails();
-
             //update logged-in user's profile;
-            setUserProfile(data.user);
+            setUserProfile(data.details);
 
         } catch (err) {
             console.error(
@@ -74,7 +72,7 @@ const FeedLayout = () => {
             <div className="grid grid-cols-1 gap-6 lg:grid-cols-[280px_1fr] xl:grid-cols-[280px_1fr_320px]">
 
                 <LeftBar
-                    userProfile={userProfile}
+                    userProfile={userProfile} //now contains the userInfo to be displayed on the leftbar;
                 />
 
                 <Feed

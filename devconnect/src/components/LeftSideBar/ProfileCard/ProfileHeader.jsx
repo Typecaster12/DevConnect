@@ -1,7 +1,6 @@
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 
-const ProfileHeader = ({userInfo}) => {
-    console.log("userInfo: ", userInfo);
+const ProfileHeader = ({ userInfo }) => {
     return (
         <div className="flex flex-col items-center text-center border-b pb-6">
 
