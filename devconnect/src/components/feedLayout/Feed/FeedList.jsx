@@ -28,24 +28,6 @@ const FeedList = ({ posts, onDeleteUserPost, onUpdateUserPost }) => {
         <div className="space-y-5">
 
             {posts?.map((post) => {
-
-                const authorId = post?.author._id;
-                // console.log("Author's id: ", authorId);
-
-                const authorAvatar = post?.author.personalInfo.avatar;
-                // console.log(authorAvatar);
-
-                const firstName = post?.author.personalInfo.firstName;
-                // console.log(firstName);
-
-                const lastName = post?.author.personalInfo.lastName;
-                // console.log(lastName);
-
-                const userName = post?.author.personalInfo.username;
-                // console.log(userName);
-
-                const postCreateTime = post?.createdAt;
-                // console.log(postCreateTime);
                 return (
                     <article
                         key={post?._id}
@@ -59,13 +41,13 @@ const FeedList = ({ posts, onDeleteUserPost, onUpdateUserPost }) => {
                                 <Avatar className="h-12 w-12">
 
                                     <AvatarImage
-                                        src={authorAvatar}
-                                        alt={`${firstName} ${lastName}`}
+                                        src={ post?.author.personalInfo.avatar}
+                                        alt={`${ post?.author.personalInfo.firstName} ${post?.author.personalInfo.lastName}`}
                                     />
 
                                     <AvatarFallback>
-                                        {firstName.charAt(0)}
-                                        {lastName.charAt(0)}
+                                        {post?.author.personalInfo.firstName.charAt(0)}
+                                        {post?.author.personalInfo.lastName.charAt(0)}
                                     </AvatarFallback>
 
                                 </Avatar>
@@ -73,19 +55,19 @@ const FeedList = ({ posts, onDeleteUserPost, onUpdateUserPost }) => {
                                 <div>
 
                                     <h3 className="font-semibold leading-none">
-                                        {firstName}{" "}
-                                        {lastName}
+                                        {post?.author.personalInfo.firstName}{" "}
+                                        {post?.author.personalInfo.lastName}
                                     </h3>
 
                                     <div className="mt-1 flex items-center gap-2 text-sm text-muted-foreground">
 
                                         <span>
-                                            {userName}
+                                            {post?.author.personalInfo.username}
                                         </span>
 
                                         <span>•</span>
 
-                                        <span>{postCreateTime}</span>
+                                        <span>{post?.createdAt}</span>
 
                                     </div>
 
@@ -130,7 +112,7 @@ const FeedList = ({ posts, onDeleteUserPost, onUpdateUserPost }) => {
                                     <DropdownMenuItem
                                         className="cursor-pointer text-red-600 focus:text-red-600"
                                         onClick={() => {
-                                            setSelectedPostId(post.id);
+                                            setSelectedPostId(post?._id);
                                             setDeleteDialogOpen(true);
                                         }}
                                     >

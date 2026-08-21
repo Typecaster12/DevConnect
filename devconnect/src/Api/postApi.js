@@ -67,6 +67,7 @@ export const deleteUserPost = async (postId) => {
         }
 
         const data = await response.json();
+        console.log("Data from PostApiFrontend: ", data)
         return data;
     } catch (error) {
         console.error("Error deleting post:", error);

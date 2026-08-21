@@ -19,9 +19,7 @@ const FeedLayout = () => {
     const getPostData = async () => {
         try {
             const data = await fetchUserPost();
-
-            console.log("Posts data: ", data);
-
+            
             //update the post list;
             setPosts(data.posts || []);
 
@@ -38,13 +36,8 @@ const FeedLayout = () => {
         try {
             const data = await fetchLoggedUserDetails();
 
-            console.log("Logged user data: ", data);
-
             //update logged-in user's profile;
             setUserProfile(data.user);
-            console.log(data)
-            console.log(data.user);
-            console.log(userProfile);
 
         } catch (err) {
             console.error(

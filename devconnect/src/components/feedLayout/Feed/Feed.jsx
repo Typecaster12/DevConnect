@@ -10,7 +10,7 @@ import {
 import LoadingSpinner from "@/components/ui/loadingSpinner";
 
 const Feed = ({
-    posts,
+    posts, //all the posts
     isLoading,
     onRefreshData
 }) => {
