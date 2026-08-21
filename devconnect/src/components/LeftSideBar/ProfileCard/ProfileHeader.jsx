@@ -7,7 +7,7 @@ const ProfileHeader = ({ userInfo }) => {
             <Avatar className="h-20 w-20">
 
                 <AvatarFallback>
-                    <img src={userInfo?.avatar} alt="HM" />
+                    <img src={userInfo?.avatar} />
                 </AvatarFallback>
 
             </Avatar>
