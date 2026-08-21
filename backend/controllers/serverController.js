@@ -66,7 +66,6 @@ export const deleteUserPost = async (req, res) => {
     try {
         //first get the id of the post;
         const { id } = req.params;
-        // console.log("Id of the post: ", id);
 
         //will find the post of matching id;
         // const postToBeDeleted = mockPosts.find(element => element.id === postId);
@@ -110,14 +109,15 @@ export const deleteUserPost = async (req, res) => {
 }
 
 //update operation, we use PATCH as we are only updating the content of the post not the copmplete post card)
-export const updateUserPost = (req, res) => {
+export const updateUserPost = async (req, res) => {
     try {
         const { id } = req.params; //we have to change this id's content;
         //first find the post's index, and then from the index we will get that post
         //after that we can extract the content from the post and update it;
 
         //fetch user's new post's content;
-        const { newPostContent } = req.body;
+        const { newPostContent } = req.body; 
+
         //new data should not be empty;
         if (!newPostContent?.trim()) {
             return res.status(400).json({
@@ -126,23 +126,20 @@ export const updateUserPost = (req, res) => {
             });
         }
 
-        //finding the index;
-        const postIndex = mockPosts.findIndex(post => post.id === id); //we get the index from here;
-        //validation, if path does not exists;
-        if (postIndex === -1) {
-            return res.status(404).json({
+        await Post.findOneAndUpdate({ _id: id }, { content: newPostContent }); //one Object for id, another one for the content
+
+        //validation, if post index is not there;
+        if (id === undefined || id == -1) {
+            return res.status(400).json({
                 status: "Failed",
-                message: "Post not found",
-            });
+                message: "Cant find the post.."
+            })
         }
-        //update the content;
-        mockPosts[postIndex].content = newPostContent;
 
         //return the response;
         res.status(200).json({
             status: "Success",
             message: "Post Updated sucessfully...",
-            post: mockPosts[postIndex],
         });
     } catch (err) {
         res.status(500).json({

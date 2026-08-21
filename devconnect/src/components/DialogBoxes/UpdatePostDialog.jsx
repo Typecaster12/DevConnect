@@ -34,9 +34,12 @@ const UpdatePostDialog = ({
         try {
             //send post id + updated content to Feed.jsx;
             await onUpdateUserPost(
-                post.id,
+                post._id,
                 updatedContent.trim()
             );
+
+            console.log("Post id: ", post._id);
+            console.log("UpdatedContent: ", updatedContent);
 
             //close dialog after successful update;
             onOpenChange(false);

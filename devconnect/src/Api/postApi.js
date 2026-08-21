@@ -47,7 +47,6 @@ export const createUserPost = async (content) => {
 
         //our json data;
         const data = await response.json();
-        console.log(data, " : This is data")
         await fetchUserPost();
         return data;
     } catch (err) {
@@ -67,7 +66,6 @@ export const deleteUserPost = async (postId) => {
         }
 
         const data = await response.json();
-        console.log("Data from PostApiFrontend: ", data)
         return data;
     } catch (error) {
         console.error("Error deleting post:", error);
@@ -87,6 +85,7 @@ export const updateUserPost = async (postId, newPostContent) => {
 
             body: JSON.stringify({
                 newPostContent, //this is the new data we are sending to the server;
+                //imp => server must use this variable, if used something else then we will get 404;
             }),
         });
 
@@ -94,6 +93,7 @@ export const updateUserPost = async (postId, newPostContent) => {
             throw new Error("Failed to update the post.");
         }
         const data = await response.json();
+        console.log("Data from update User Post: ", data);
         return data;
 
     } catch (error) {
