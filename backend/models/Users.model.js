@@ -44,6 +44,20 @@ const userSchema = new mongoose.Schema(
             },
         },
 
+        //for auth, we will use email and pass two new field here;
+        email: {
+            type: String,
+            required: true,
+            unique: true,
+            trim: true,
+        },
+
+        //will be in hashed formate;
+        password: {
+            type: String,
+            required: true,
+        },
+
         // Stores ids of all friends
         friends: [
             {

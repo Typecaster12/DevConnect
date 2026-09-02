@@ -2,6 +2,7 @@ import express from "express";
 import cors from "cors";
 import morgan from "morgan";
 import router from "./routes/router.js";
+import authRouter from "./routes/authRouter.js";
 
 
 const app = express();
@@ -17,6 +18,7 @@ app.use(morgan("dev"));
 
 
 //routes
+app.use("/auth", authRouter);
 app.use("/mock", router);
 
 //wildcard route;

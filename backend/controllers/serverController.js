@@ -1,10 +1,7 @@
-import mockPosts from "../data/mockPost.js";
-import mockUsers from "../data/mockUser.js";
 import Post from "../models/Posts.model.js";
 import User from "../models/Users.model.js";
 
 const loggedUser = "6a8340cadc4371f50a62ac45"; //from mongodb
-const currentUser = mockUsers[0];
 
 export const fetchPost = async (req, res) => {
     try {
