@@ -1,10 +1,13 @@
 import express from 'express';
 import { createUserPost, deleteUserPost, fetchPost, getLoggedUserProfile, updateUserPost } from '../controllers/serverController.js';
-// import { checkingHome } from '../controllers/serverController.js';
+import { authMiddleWare } from '../middleware/authMiddleware.js';
 
 const router = express.Router();
 
-// router.get("/", checkingHome);
+//here every route requires jwt verification thats why we are using authMiddleware globally
+//but in authRouter we cannot use it globally;
+router.use(authMiddleWare);
+
 router.get("/mockPost", fetchPost);
 
 router.post("/mockPost", createUserPost);

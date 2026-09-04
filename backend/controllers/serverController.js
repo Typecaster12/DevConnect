@@ -1,13 +1,16 @@
 import Post from "../models/Posts.model.js";
 import User from "../models/Users.model.js";
 
-const loggedUser = "6a8340cadc4371f50a62ac45"; //from mongodb
+// const loggedUser = req.user.id; //this will give us id of currently loggedin user;
+// const loggedUser = "6a8340cadc4371f50a62ac45"; //from mongodb
 
 export const fetchPost = async (req, res) => {
     try {
+        console.log("Logged in user:", req.user);
         //find from the post;
         const posts = await Post.find({
-            author: loggedUser
+            // author: loggedUser
+            author: req.user.id
         })
             .populate("author")
             .sort({ createdAt: -1 });
@@ -40,7 +43,7 @@ export const createUserPost = async (req, res) => {
         }
 
         await Post.create({
-            author: loggedUser,
+            author: req.user.id,
             content: content.trim()
         });
 
@@ -65,14 +68,15 @@ export const deleteUserPost = async (req, res) => {
 
         //we will find the post's id and then delete it using findOneAndDelete;
         const deletedPost = await Post.findOneAndDelete({
-            _id: id
+            _id: id, //this is of post id;
+            author: req.user.id //need user's id also;
         });
 
         //checking, if post exists or not;
         if (!deletedPost) {
-            res.status(400).json({
+            return res.status(400).json({
                 status: "Failed",
-                message: "Post not found."
+                message: "Post not found or you are not the owner."
             })
         }
         //return the response;
@@ -104,13 +108,12 @@ export const updateUserPost = async (req, res) => {
             });
         }
 
-        await Post.findOneAndUpdate({ _id: id }, { content: newPostContent }); //one Object for id, another one for the content
+        const updatedPost = await Post.findOneAndUpdate({ _id: id, author: req.user.id }, { content: newPostContent }, { new: true }); //one Object for id, another one for the content
 
-        //validation, if post index is not there;
-        if (id === undefined || id == -1) {
-            return res.status(400).json({
+        if (!updatedPost) {
+            return res.status(404).json({
                 status: "Failed",
-                message: "Cant find the post.."
+                message: "Can't delete the post which is not yours"
             })
         }
 
@@ -130,15 +133,9 @@ export const updateUserPost = async (req, res) => {
 //for leftSideBar => to get the details of currentlogged in user;
 export const getLoggedUserProfile = async (req, res) => {
     try {
-        // //get the right user;
-        // const user = mockUsers.find(
-        //     user => user.id === currentUser.id
-        // );
+        const thisUser = await User.findById(req.user.id);
 
-        const user = await User.findById(loggedUser);
-        console.log("User for their details: ", user);
-
-        if (!user) {
+        if (!thisUser) {
             return res.status(404).json({
                 status: "Failed",
                 message: "No User Found..",
@@ -149,35 +146,19 @@ export const getLoggedUserProfile = async (req, res) => {
         //this will give us exact number of posts
         //as every post creates a document;
         const postCount = await Post.countDocuments({
-            author: user._id
+            author: thisUser._id
         });
-        console.log("Post by User: ", postCount);
-        //for postCount
-        // const postCount = mockPosts.filter(
-        //     post => post.authorId === currentUser.id
-        // ).length;
-
-
-        // return res.status(200).json({
-        //     status: "Success",
-        //     user: {
-        //         ...user,
-        //         stats: {
-        //             ...user.stats,
-        //             posts: postCount,
-        //         },
-        //     },
-        // });
+        // console.log("Post by User: ", postCount);
 
         res.status(200).json({
             status: "Success",
             message: "User details fetched successfully",
             details: {
-                ...user.toObject(), //this converts the mongoDb object to normal object
+                ...thisUser.toObject(), //this converts the mongoDb object to normal object
                 //as .countDocuments returns mongoDB document instead of normal js object;
 
                 stats: {
-                    ...user.stats,
+                    ...thisUser.stats,
                     posts: postCount
                 }
             }
