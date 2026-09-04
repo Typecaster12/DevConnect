@@ -1,6 +1,7 @@
 import User from "../models/Users.model.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import { token } from "morgan";
 
 //for new registration;
 export const registerNewUser = async (req, res) => {
@@ -67,7 +68,7 @@ export const registerNewUser = async (req, res) => {
     }
 };
 
-//for login existing user;
+//for login existing(registered) user;
 export const userLogin = async (req, res) => {
     try {
         const { email, password } = req.body;
@@ -131,5 +132,34 @@ export const userLogin = async (req, res) => {
             message: err.message,
         })
     }
+}
 
+export const userLogout = async (req, res) => {
+    try {
+        //get the user's token;
+        const userToken = req.cookies.token;
+        console.log("From logout api: ", userToken);
+
+        //validation;
+        if (!userToken) {
+            return res.status(200).json({
+                status: "Success",
+                message: "No token found. You are already logged out."
+            })
+        }
+
+        res.clearCookie("token"); //takes the name of token which is "token" in our case
+        //and userToken contains value of token and we dont need the actual token here, we only need the name of token
+
+        //send the response;
+        res.status(200).json({
+            status: "Success",
+            message: "Logout successfull"
+        })
+    } catch (err) {
+        res.status(500).json({
+            status: "Failed",
+            message: err.message
+        })
+    }
 }
