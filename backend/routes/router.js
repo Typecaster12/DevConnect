@@ -8,16 +8,16 @@ const router = express.Router();
 //but in authRouter we cannot use it globally;
 router.use(authMiddleWare);
 
-router.get("/mockPost", fetchPost);
+router.get("/posts", fetchPost);
 
-router.post("/mockPost", createUserPost);
+router.post("/posts", createUserPost);
 
 //for delete post;
 //id will be of the post whicch will be clicked for removal;
-router.delete("/mockPost/:id", deleteUserPost);
+router.delete("/posts/:id", deleteUserPost);
 
 //for update functionality
-router.patch("/mockPost/:id", updateUserPost);
+router.patch("/posts/:id", updateUserPost);
 
 
 //for logged user profile(get);

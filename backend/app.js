@@ -19,7 +19,7 @@ app.use(morgan("dev"));
 
 //routes
 app.use("/auth", authRouter);
-app.use("/mock", router);
+app.use("/api", router);
 
 //wildcard route;
 app.use((req, res) => {

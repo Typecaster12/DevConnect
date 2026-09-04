@@ -2,7 +2,7 @@ const BASE_URL = "http://localhost:5000";
 
 export const fetchLoggedUserDetails = async () => {
     try {
-        const response = await fetch(`${BASE_URL}/mock/user`);
+        const response = await fetch(`${BASE_URL}/api/user`);
 
         if (!response.ok) {
             throw new Error("Failed to fetch logged user's details")

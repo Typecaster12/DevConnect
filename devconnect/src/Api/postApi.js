@@ -5,7 +5,7 @@ const BASE_URL = "http://localhost:5000";
 export const fetchUserPost = async () => {
     try {
 
-        const response = await fetch(`${BASE_URL}/mock/mockPost`);
+        const response = await fetch(`${BASE_URL}/api/posts`);
 
         //exception
         if (!response.ok) {
@@ -27,7 +27,7 @@ export const createUserPost = async (content) => {
     try {
         //here response holds http response
         //if response.ok becomes true, then we will get our json data;
-        const response = await fetch(`${BASE_URL}/mock/mockPost`, {
+        const response = await fetch(`${BASE_URL}/api/posts`, {
 
             method: "POST",
 
@@ -57,7 +57,7 @@ export const createUserPost = async (content) => {
 
 export const deleteUserPost = async (postId) => {
     try {
-        const response = await fetch(`${BASE_URL}/mock/mockPost/${postId}`, {
+        const response = await fetch(`${BASE_URL}/api/posts/${postId}`, {
             method: "DELETE",
         });
 
@@ -76,7 +76,7 @@ export const deleteUserPost = async (postId) => {
 //for post's content updation;
 export const updateUserPost = async (postId, newPostContent) => {
     try {
-        const response = await fetch(`${BASE_URL}/mock/mockPost/${postId}`, {
+        const response = await fetch(`${BASE_URL}/api/posts/${postId}`, {
             method: "PATCH",
 
             headers: {
