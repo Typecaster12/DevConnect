@@ -29,8 +29,6 @@ export const authMiddleWare = async (req, res, next) => {
             userToken,
             process.env.JWT_SECRET
         );
-        console.log("Decode from authMiddleware: ", decode);
-        console.log("User's mongoDb _id: ", decode.id);
 
         //if decode success; store the user's info into the request;
         req.user = decode;

@@ -1,9 +1,6 @@
 import Post from "../models/Posts.model.js";
 import User from "../models/Users.model.js";
 
-// const loggedUser = req.user.id; //this will give us id of currently loggedin user;
-// const loggedUser = "6a8340cadc4371f50a62ac45"; //from mongodb
-
 export const fetchPost = async (req, res) => {
     try {
         console.log("Logged in user:", req.user);
