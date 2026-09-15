@@ -5,7 +5,9 @@ const BASE_URL = "http://localhost:5000";
 export const fetchUserPost = async () => {
     try {
 
-        const response = await fetch(`${BASE_URL}/api/posts`);
+        const response = await fetch(`${BASE_URL}/api/posts`, {
+            credentials: "include",
+        });
 
         //exception
         if (!response.ok) {
@@ -30,7 +32,7 @@ export const createUserPost = async (content) => {
         const response = await fetch(`${BASE_URL}/api/posts`, {
 
             method: "POST",
-
+            credentials: "include",
             headers: {
                 "Content-Type": "application/json",
             },
@@ -59,6 +61,7 @@ export const deleteUserPost = async (postId) => {
     try {
         const response = await fetch(`${BASE_URL}/api/posts/${postId}`, {
             method: "DELETE",
+            credentials: "include",
         });
 
         if (!response.ok) {
@@ -78,7 +81,7 @@ export const updateUserPost = async (postId, newPostContent) => {
     try {
         const response = await fetch(`${BASE_URL}/api/posts/${postId}`, {
             method: "PATCH",
-
+            credentials: "include",
             headers: {
                 "Content-Type": "application/json",
             },

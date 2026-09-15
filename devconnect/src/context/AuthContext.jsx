@@ -1,4 +1,4 @@
-import { loginUser, registerUser } from "@/Api/auth";
+import { loginUser, logoutSession, registerUser } from "@/Api/auth";
 import { fetchLoggedUserDetails } from "@/Api/loggedUser";
 import { createContext, useEffect, useState } from "react";
 
@@ -56,7 +56,23 @@ const AuthContextProvider = ({ children }) => {
             throw err;
         }
     }
-    return <AuthContext.Provider value={{ loggedUser, loading, isUserAuthenticated, login, register }}>{children}</AuthContext.Provider>
+
+    //for logout;
+    const logout = async () => {
+        try {
+            const data = await logoutSession();
+            //clear the previous(who just loged out) user's details
+            //as backend removes the token of that user;
+            setLoggedUser(null);
+            console.log("Logout successfull", data);
+        } catch (err) {
+            console.log("Logout failed: ", err);
+            throw err;
+        }
+    }
+
+
+    return <AuthContext.Provider value={{ loggedUser, loading, isUserAuthenticated, login, register, logout }}>{children}</AuthContext.Provider>
 }
 
 export default AuthContextProvider;

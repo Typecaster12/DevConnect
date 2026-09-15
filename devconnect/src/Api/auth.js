@@ -55,3 +55,25 @@ export const registerUser = async (firstName, lastName, username, email, passwor
         throw err;
     }
 }
+
+//logout api layer;
+export const logoutSession = async () => {
+    try {
+        const response = await fetch(`${BASE_URL}/auth/logout`, {
+            method: "POST",
+            credentials: "include",
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            throw new Error(data.message || "Logout failed");
+        }
+
+        return data;
+
+    } catch (err) {
+        console.log("Some Error occurred while logging out:", err);
+        throw err;
+    }
+};
