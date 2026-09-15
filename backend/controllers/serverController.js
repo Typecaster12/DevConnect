@@ -130,7 +130,8 @@ export const updateUserPost = async (req, res) => {
 //for leftSideBar => to get the details of currentlogged in user;
 export const getLoggedUserProfile = async (req, res) => {
     try {
-        const thisUser = await User.findById(req.user.id);
+        //we dont need password in the response althoug it is hashed but still due to security concerns
+        const thisUser = await User.findById(req.user.id).select("-password");
 
         if (!thisUser) {
             return res.status(404).json({

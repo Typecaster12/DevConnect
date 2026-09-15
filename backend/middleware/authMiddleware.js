@@ -7,7 +7,6 @@ export const authMiddleWare = async (req, res, next) => {
         //to verify, which user is currently logedin or making requests
         //we have to take the token and verify the user on that basis;
         const userToken = req.cookies.token;
-        console.log(userToken);
 
         if (!userToken) {
             return res.status(401).json({

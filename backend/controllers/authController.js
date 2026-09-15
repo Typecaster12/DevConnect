@@ -1,7 +1,7 @@
 import User from "../models/Users.model.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import { token } from "morgan";
+// import { token } from "morgan";
 
 //for new registration;
 export const registerNewUser = async (req, res) => {
@@ -138,7 +138,6 @@ export const userLogout = async (req, res) => {
     try {
         //get the user's token;
         const userToken = req.cookies.token;
-        console.log("From logout api: ", userToken);
 
         //validation;
         if (!userToken) {
