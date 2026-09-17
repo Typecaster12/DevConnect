@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 
 import Feed from "./Feed/Feed";
 import LeftBar from "../LeftSideBar/LeftBar";
@@ -6,8 +6,12 @@ import RightBar from "../RightSideBar/RightBar";
 
 import { fetchUserPost } from "@/Api/postApi";
 import { fetchLoggedUserDetails } from "@/Api/loggedUser";
+import { AuthContext } from "@/context/AuthContext";
 
 const FeedLayout = () => {
+    //get accessToken from AuthContext;
+    const { accessToken } = useContext(AuthContext);
+
     //lifted state;
     const [posts, setPosts] = useState([]);
     const [userProfile, setUserProfile] = useState(null);
@@ -17,7 +21,7 @@ const FeedLayout = () => {
     //for fetching posts;
     const getPostData = async () => {
         try {
-            const data = await fetchUserPost();
+            const data = await fetchUserPost(accessToken);
 
             //update the post list;
             setPosts(data.posts || []);
@@ -33,7 +37,7 @@ const FeedLayout = () => {
     //for fetching logged-in user's details;
     const getLoggedUserData = async () => {
         try {
-            const data = await fetchLoggedUserDetails();
+            const data = await fetchLoggedUserDetails(accessToken);
             //update logged-in user's profile;
             setUserProfile(data.details);
 
@@ -55,6 +59,8 @@ const FeedLayout = () => {
 
     //initial data fetching;
     useEffect(() => {
+        if (!accessToken) return;
+
         const loadData = async () => {
             try {
                 await refreshData();
@@ -64,7 +70,7 @@ const FeedLayout = () => {
         };
 
         loadData();
-    }, []);
+    }, [accessToken]);
 
     return (
         <section className="mx-auto max-w-7xl px-4 py-6">

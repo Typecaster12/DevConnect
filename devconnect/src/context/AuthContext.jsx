@@ -1,4 +1,4 @@
-import { loginUser, logoutSession, registerUser } from "@/Api/auth";
+import { loginUser, logoutSession, refreshAccessToken, registerUser } from "@/Api/auth";
 import { fetchLoggedUserDetails } from "@/Api/loggedUser";
 import { createContext, useEffect, useState } from "react";
 
@@ -9,18 +9,26 @@ const AuthContextProvider = ({ children }) => {
     //state that will store the logedin user's details, initially will be null;
     const [loggedUser, setLoggedUser] = useState(null);
     const [loading, setLoading] = useState(true);
+    //we are now storing the accessToken inside the memory;
+    const [accessToken, setAccessToken] = useState(null);
 
     //tracker, to track if the user authenticated or not?
     const isUserAuthenticated = !!loggedUser;
 
     //we will check for user when this component mounts;
     useEffect(() => {
+        //so onevery time app mounts, first fetch the accessToken is there is any
+        //then using that we will see loggedUser's details;
         const checkLoginStatus = async () => {
             try {
-                const data = await fetchLoggedUserDetails();
+                const accessTokenData = await refreshAccessToken();
+                setAccessToken(accessTokenData.accessToken);
+
+                const data = await fetchLoggedUserDetails(accessTokenData.accessToken);
                 setLoggedUser(data.details);
             } catch (err) {
                 setLoggedUser(null);
+                setAccessToken(null);
                 console.log("User not authenticated: ", err);
             } finally {
                 setLoading(false);
@@ -34,11 +42,12 @@ const AuthContextProvider = ({ children }) => {
     const login = async (email, password) => {
         try {
             const data = await loginUser(email, password); //if this trows error, catch block will be executed;
-            //testlog;
-            console.log("Login Successfully: ", data);
+            //response from backend = {status,message,accessToken},
+            setAccessToken(data.accessToken);
 
             //if successfull we have to call next function reponsible for fetching user data;
-            const loggedUserData = await fetchLoggedUserDetails();
+            //pass the accessToken as parameter;
+            const loggedUserData = await fetchLoggedUserDetails(data.accessToken);
             setLoggedUser(loggedUserData.details);
         } catch (err) {
             console.log("Login failed:", err.message);
@@ -64,6 +73,7 @@ const AuthContextProvider = ({ children }) => {
             //clear the previous(who just loged out) user's details
             //as backend removes the token of that user;
             setLoggedUser(null);
+            setAccessToken(null);
             console.log("Logout successfull", data);
         } catch (err) {
             console.log("Logout failed: ", err);
@@ -72,7 +82,7 @@ const AuthContextProvider = ({ children }) => {
     }
 
 
-    return <AuthContext.Provider value={{ loggedUser, loading, isUserAuthenticated, login, register, logout }}>{children}</AuthContext.Provider>
+    return <AuthContext.Provider value={{ loggedUser, loading, isUserAuthenticated, login, register, logout, accessToken }}>{children}</AuthContext.Provider>
 }
 
 export default AuthContextProvider;

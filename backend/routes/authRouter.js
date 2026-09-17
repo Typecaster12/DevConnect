@@ -1,5 +1,5 @@
 import express from "express";
-import { registerNewUser, userLogin, userLogout } from "../controllers/authController.js";
+import { refreshToken, registerNewUser, userLogin, userLogout } from "../controllers/authController.js";
 
 const authRouter = express.Router();
 
@@ -7,5 +7,6 @@ const authRouter = express.Router();
 authRouter.post("/registration", registerNewUser);
 authRouter.post("/login", userLogin);
 authRouter.post("/logout", userLogout);
+authRouter.get("/refresh-token", refreshToken); //to generate new accessToken
 
 export default authRouter;

@@ -2,11 +2,13 @@
 const BASE_URL = "http://localhost:5000";
 
 //to get existing posts of the users;
-export const fetchUserPost = async () => {
+export const fetchUserPost = async (accessToken) => {
     try {
 
         const response = await fetch(`${BASE_URL}/api/posts`, {
-            credentials: "include",
+            headers: {
+                Authorization: `Bearer ${accessToken}`
+            }
         });
 
         //exception
@@ -17,15 +19,13 @@ export const fetchUserPost = async () => {
         return data;
 
     } catch (error) {
-
         console.error("Error Fetching Posts:", error);
-
         throw error;
     }
 };
 
 //to create new posts;
-export const createUserPost = async (content) => {
+export const createUserPost = async (content, accessToken) => {
     try {
         //here response holds http response
         //if response.ok becomes true, then we will get our json data;
@@ -35,6 +35,7 @@ export const createUserPost = async (content) => {
             credentials: "include",
             headers: {
                 "Content-Type": "application/json",
+                Authorization: `Bearer ${accessToken}`
             },
 
             body: JSON.stringify({
@@ -57,11 +58,13 @@ export const createUserPost = async (content) => {
     }
 }
 
-export const deleteUserPost = async (postId) => {
+export const deleteUserPost = async (postId, accessToken) => {
     try {
         const response = await fetch(`${BASE_URL}/api/posts/${postId}`, {
             method: "DELETE",
-            credentials: "include",
+            headers: {
+                Authorization: `Bearer ${accessToken}`
+            }
         });
 
         if (!response.ok) {
@@ -77,13 +80,14 @@ export const deleteUserPost = async (postId) => {
 }
 
 //for post's content updation;
-export const updateUserPost = async (postId, newPostContent) => {
+export const updateUserPost = async (postId, newPostContent, accessToken) => {
     try {
         const response = await fetch(`${BASE_URL}/api/posts/${postId}`, {
             method: "PATCH",
             credentials: "include",
             headers: {
                 "Content-Type": "application/json",
+                Authorization: `Bearer ${accessToken}`
             },
 
             body: JSON.stringify({

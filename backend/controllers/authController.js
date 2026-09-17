@@ -69,6 +69,9 @@ export const registerNewUser = async (req, res) => {
 };
 
 //for login existing(registered) user;
+//now we are going to use concept of refresh token and accesstoken
+//currently our project is using accesstoken of expiration time of 1d which is not ideal
+//now our project will support mpre better security;
 export const userLogin = async (req, res) => {
     try {
         const { email, password } = req.body;
@@ -99,33 +102,59 @@ export const userLogin = async (req, res) => {
             });
         }
 
+        //this is a access token
         //if password is correct, generate jwt;
-        const token = jwt.sign(
+        // const token = jwt.sign(
+        //     {
+        //         //id of user, who currently logged in;
+        //         id: user._id
+        //     },
+        //     process.env.JWT_SECRET,
+        //     {
+        //         expiresIn: "1d" //this token will expire in 1 day;
+        //     }
+        // );
+
+        //accessToken;
+        const accessToken = jwt.sign(
             {
                 //id of user, who currently logged in;
                 id: user._id
             },
             process.env.JWT_SECRET,
             {
-                expiresIn: "1d" //this token will expire in 1 day;
+                expiresIn: "15m"
             }
         );
 
 
+        //refreshToken;
+        const refreshToken = jwt.sign(
+            {
+                id: user._id
+            },
+            process.env.JWT_SECRET,
+            {
+                expiresIn: "2d"
+            }
+        )
+
         // store the token in cookie
         //this cookie will be sent with every future requests;
-        res.cookie("token", token, {
+        //now we only store refresh token inside http-only cookie
+        res.cookie("refreshToken", refreshToken, {
             httpOnly: true,
             secure: process.env.NODE_ENV === "production",
-            sameSite: "lax",
-            maxAge: 24 * 60 * 60 * 1000
+            sameSite: "strict",
+            maxAge: 2 * 24 * 60 * 60 * 1000 //2d(same as expiresIn: 2d)
         });
 
         //send the final response;
         res.status(200).json({
             status: "Success",
-            message: "Login Successfull, Welcome User."
-        })
+            message: "Login Successfull, Welcome User.",
+            accessToken //as this will  be stored inside the memory that why we have to send response token inside the response body;
+        });
     } catch (err) {
         res.status(500).json({
             status: "Failed",
@@ -137,17 +166,20 @@ export const userLogin = async (req, res) => {
 export const userLogout = async (req, res) => {
     try {
         //get the user's token;
-        const userToken = req.cookies.token;
+        const refreshToken = req.cookies.refreshToken;
+
+        //get the auth header;
+        // const authHeader = req.headers.authorization;
 
         //validation;
-        if (!userToken) {
+        if (!refreshToken) {
             return res.status(200).json({
                 status: "Success",
                 message: "No token found. You are already logged out."
             })
         }
 
-        res.clearCookie("token"); //takes the name of token which is "token" in our case
+        res.clearCookie("refreshToken"); //takes the name of token which is "token" in our case
         //and userToken contains value of token and we dont need the actual token here, we only need the name of token
 
         //send the response;
@@ -162,3 +194,44 @@ export const userLogout = async (req, res) => {
         })
     }
 }
+
+//we have to make one controller function for generating new accessToken(once it will get expired);
+export const refreshToken = (req, res) => {
+    try {
+        //get the refreshToken;
+        const refToken = req.cookies.refreshToken;
+        //validate;
+        if (!refToken) {
+            return res.status(401).json({
+                status: "Failed",
+                message: "Unauthorized, No refreshToken Found"
+            });
+        }
+
+        //verify the refreshToken;
+        const decode = jwt.verify(refToken, process.env.JWT_SECRET);
+
+        //create accessToken;
+        const accessToken = jwt.sign(
+            {
+                //id of user, who currently logged in;
+                id: decode.id
+            },
+            process.env.JWT_SECRET,
+            {
+                expiresIn: "15m"
+            }
+        );
+
+        res.status(200).json({
+            status: "Success",
+            message: "AccessToken refresh successfully",
+            accessToken
+        })
+    } catch (err) {
+        res.status(500).json({
+            status: "Failed",
+            message: err.message,
+        })
+    }
+};

@@ -1,3 +1,5 @@
+//this layer is directly communicating with backend's api
+//and then our context will use this
 //here we will have loginUser(), regisgteruser(), logoutUser(), 
 const BASE_URL = "http://localhost:5000";
 
@@ -5,7 +7,7 @@ export const loginUser = async (email, password) => {
     try {
         const response = await fetch(`${BASE_URL}/auth/login`, {
             method: "POST",
-            credentials: "include", //Include cookies when making this request, and allow cookies to be handled for the response.
+            credentials: "include", //Include cookies when making this request, and allow cookies to be handled for the response. 
             headers: {
                 "Content-Type": "application/json",
             },
@@ -26,8 +28,8 @@ export const loginUser = async (email, password) => {
     }
 }
 
-//for new Registration
-// firstName, lastName, username, email, password
+//for new Registration 
+// firstName, lastName, username, email, password 
 export const registerUser = async (firstName, lastName, username, email, password) => {
     try {
         const response = await fetch(`${BASE_URL}/auth/registration`, {
@@ -56,7 +58,28 @@ export const registerUser = async (firstName, lastName, username, email, passwor
     }
 }
 
-//logout api layer;
+//refresh access token api layer
+export const refreshAccessToken = async () => {
+    try {
+        const response = await fetch(`${BASE_URL}/auth/refresh-token`, {
+            method: "GET",
+            credentials: "include",
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            throw new Error(data.message || "Failed to refresh access token");
+        }
+
+        return data;
+    } catch (err) {
+        console.log("Some Error occurred while refreshing access token:", err);
+        throw err;
+    }
+}
+
+//logout api layer; 
 export const logoutSession = async () => {
     try {
         const response = await fetch(`${BASE_URL}/auth/logout`, {
@@ -71,7 +94,6 @@ export const logoutSession = async () => {
         }
 
         return data;
-
     } catch (err) {
         console.log("Some Error occurred while logging out:", err);
         throw err;

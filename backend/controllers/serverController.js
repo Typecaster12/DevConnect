@@ -3,7 +3,7 @@ import User from "../models/Users.model.js";
 
 export const fetchPost = async (req, res) => {
     try {
-        console.log("Logged in user:", req.user);
+        console.log("Logged in user from fetchPostController: ", req.user);
         //find from the post;
         const posts = await Post.find({
             // author: loggedUser
@@ -129,6 +129,7 @@ export const updateUserPost = async (req, res) => {
 
 //for leftSideBar => to get the details of currentlogged in user;
 export const getLoggedUserProfile = async (req, res) => {
+    console.log(req.user);
     try {
         //we dont need password in the response althoug it is hashed but still due to security concerns
         const thisUser = await User.findById(req.user.id).select("-password");

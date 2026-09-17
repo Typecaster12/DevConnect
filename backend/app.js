@@ -10,7 +10,7 @@ const app = express();
 // Middlewares
 app.use(cors({
     origin: "http://localhost:5173",
-    credentials: true
+    credentials: true //share accesstoken with every request
 }));
 app.use(express.json());
 app.use(cookieParser());

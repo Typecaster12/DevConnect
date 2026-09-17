@@ -26,6 +26,7 @@ const Login = () => {
   const selectMode = (nextMode) => {
     setMode(nextMode); setError(""); setSuccess(""); setShowPassword(false);
   };
+  
   const handleLoginChange = ({ target: { name, value } }) => setLoginDetails((current) => ({ ...current, [name]: value }));
   const handleRegistrationChange = ({ target: { name, value } }) => setRegistrationDetails((current) => ({ ...current, [name]: value }));
 
