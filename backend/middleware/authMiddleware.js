@@ -22,7 +22,7 @@ export const authMiddleWare = async (req, res, next) => {
 
         //extracting actual token;
         const accessToken = authHeader.split(" ")[1];
-
+        console.log("Accesstoken from middleware: ", accessToken);
         // if (!userToken) {
         //     return res.status(401).json({
         //         status: "Failed",

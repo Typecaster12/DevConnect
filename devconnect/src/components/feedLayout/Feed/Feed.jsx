@@ -1,3 +1,4 @@
+import { useContext } from "react";
 import CreatePost from "./CreatePost/CreatePost";
 import FeedList from "./FeedList";
 
@@ -8,12 +9,16 @@ import {
 } from "@/Api/postApi";
 
 import LoadingSpinner from "@/components/ui/loadingSpinner";
+import { AuthContext } from "@/context/AuthContext";
 
 const Feed = ({
     posts, //all the posts
     isLoading,
     onRefreshData
 }) => {
+
+    //get the accessToken;
+    const { accessToken } = useContext(AuthContext);
 
     //loading state;
     if (isLoading) {
@@ -23,7 +28,7 @@ const Feed = ({
     //function to handle new post creation;
     const handleCreatePost = async (content) => {
         try {
-            await createUserPost(content);
+            await createUserPost(content, accessToken);
 
             //ask parent to fetch latest posts + user profile;
             await onRefreshData();
@@ -36,7 +41,7 @@ const Feed = ({
     //function to handle post deletion;
     const handleDeletePost = async (postId) => {
         try {
-            await deleteUserPost(postId);
+            await deleteUserPost(postId, accessToken);
 
             //ask parent to fetch latest posts + user profile;
             await onRefreshData();
@@ -49,7 +54,7 @@ const Feed = ({
     //function to handle post updation;
     const handleUpdatePost = async (postId, newPostContent) => {
         try {
-            await updateUserPost(postId, newPostContent);
+            await updateUserPost(postId, newPostContent, accessToken);
 
             //ask parent to fetch latest posts + user profile;
             await onRefreshData();

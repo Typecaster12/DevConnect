@@ -38,9 +38,6 @@ const UpdatePostDialog = ({
                 updatedContent.trim()
             );
 
-            console.log("Post id: ", post._id);
-            console.log("UpdatedContent: ", updatedContent);
-
             //close dialog after successful update;
             onOpenChange(false);
 

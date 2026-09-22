@@ -3,15 +3,12 @@ const BASE_URL = "http://localhost:5000";
 //this is basically fetching the users from database, after the sucessfull registration of the user;
 //after login(to confirm the credentils) when we get the jwt of user, using that we will get the user's data from this api function
 export const fetchLoggedUserDetails = async (accessToken) => {
-    console.log("AccessToken from loggedUser: ", accessToken); //done
     try {
         const response = await fetch(`${BASE_URL}/api/user`, {
             headers: {
                 Authorization: `Bearer ${accessToken}` //sending accessToken to backend to get the user's details
             }
         });
-
-        console.log("response: ", response); //done
 
         if (!response.ok) {
             throw new Error("Failed to fetch logged user's details")

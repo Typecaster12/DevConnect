@@ -50,7 +50,6 @@ export const createUserPost = async (content, accessToken) => {
 
         //our json data;
         const data = await response.json();
-        await fetchUserPost();
         return data;
     } catch (err) {
         console.error("Error Creating Post:", err);
@@ -100,7 +99,6 @@ export const updateUserPost = async (postId, newPostContent, accessToken) => {
             throw new Error("Failed to update the post.");
         }
         const data = await response.json();
-        console.log("Data from update User Post: ", data);
         return data;
 
     } catch (error) {
