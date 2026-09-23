@@ -182,9 +182,36 @@ export const userLogout = async (req, res) => {
         if (!refreshToken) {
             return res.status(200).json({
                 status: "Success",
-                message: "No token found. You are already logged out."
+                message: "Refresh Token not found. You are already logged out."
             })
         }
+
+        //as we have sessions of each logins, we have to revoke: ture and clear the session of perticular refresh token
+        //and then we have to clear the refreshToken as well;
+
+        //first create hash of refreshToken to search it from DB;
+        const hashedRefreshToken = crypto
+            .createHash("sha256")
+            .update(refreshToken)
+            .digest("hex");
+
+        //now search for this perticular hash of refreshToken which is not revoked yet;
+        const thisSession = await Sessions.findOne({
+            refreshTokenHash: hashedRefreshToken,
+            revoked: false
+        });
+
+        //check if we got the session or not;
+        if (!thisSession) {
+            return res.status(200).json({
+                status: "Failed",
+                message: "Session not found, You are already logged out."
+            })
+        }
+
+        //if twe find session, revoke it so that its refreshToken becomes invalid;
+        thisSession.revoked = true;
+        await thisSession.save();
 
         res.clearCookie("refreshToken"); //takes the name of token which is "token" in our case
         //and userToken contains value of token and we dont need the actual token here, we only need the name of token
