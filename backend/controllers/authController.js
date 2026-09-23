@@ -203,6 +203,8 @@ export const userLogout = async (req, res) => {
 
         //check if we got the session or not;
         if (!thisSession) {
+            res.clearCookie("refreshToken"); //clear it
+
             return res.status(200).json({
                 status: "Failed",
                 message: "Session not found, You are already logged out."
@@ -230,7 +232,7 @@ export const userLogout = async (req, res) => {
 }
 
 //we have to make one controller function for generating new accessToken(once it will get expired);
-export const refreshToken = (req, res) => {
+export const refreshToken = async (req, res) => {
     try {
         //get the refreshToken;
         const refToken = req.cookies.refreshToken;
@@ -245,11 +247,32 @@ export const refreshToken = (req, res) => {
         //verify the refreshToken;
         const decode = jwt.verify(refToken, process.env.JWT_SECRET);
 
+        //instead of directly, generating access and refreshToke, adding some verification layer;
+        const hashedRefreshToken = crypto
+            .createHash("sha256")
+            .update(refreshToken)
+            .digest("hex");
+
+        //session must not be invoked;
+        const thisSession = await Sessions.findOne({
+            refreshTokenHash: hashedRefreshToken,
+            revoked: false
+        });
+
+        //check if we have above data or not;
+        if (!thisSession) {
+            return res.status(401).json({
+                status: "Failed",
+                message: "Invalid refresh token"
+            })
+        }
+
         //create accessToken;
         const accessToken = jwt.sign(
             {
                 //id of user, who currently logged in;
-                id: decode.id
+                id: decode.id,
+                sessionId: thisSession._id
             },
             process.env.JWT_SECRET,
             {
@@ -268,7 +291,17 @@ export const refreshToken = (req, res) => {
             {
                 expiresIn: "2d"
             }
-        )
+        );
+
+        //now this newRefreshToken will be saved in the session;
+        const newHashedRefreshToken = crypto
+            .createHash("sha256")
+            .update(newRefreshToken)
+            .digest("hex");
+
+
+        thisSession.refreshTokenHash = newHashedRefreshToken;
+        await thisSession.save();
 
         //store new refresh token into cookie;
         res.cookie("refreshToken", newRefreshToken, {
