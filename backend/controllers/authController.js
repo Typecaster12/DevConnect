@@ -1,6 +1,8 @@
 import User from "../models/Users.model.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import Sessions from "../models/Session.model.js";
+import crypto from "crypto";
 // import { token } from "morgan";
 
 //for new registration;
@@ -102,31 +104,6 @@ export const userLogin = async (req, res) => {
             });
         }
 
-        //this is a access token
-        //if password is correct, generate jwt;
-        // const token = jwt.sign(
-        //     {
-        //         //id of user, who currently logged in;
-        //         id: user._id
-        //     },
-        //     process.env.JWT_SECRET,
-        //     {
-        //         expiresIn: "1d" //this token will expire in 1 day;
-        //     }
-        // );
-
-        //accessToken;
-        const accessToken = jwt.sign(
-            {
-                //id of user, who currently logged in;
-                id: user._id
-            },
-            process.env.JWT_SECRET,
-            {
-                expiresIn: "15m"
-            }
-        );
-
 
         //refreshToken;
         const refreshToken = jwt.sign(
@@ -139,11 +116,41 @@ export const userLogin = async (req, res) => {
             }
         )
 
+        //first create a hash of refreshtoken;
+        //hash technique for tokens, different from password hash;
+        const hashedRefreshToken = crypto
+            .createHash("sha256")
+            .update(refreshToken)
+            .digest("hex");
+
+        //this is session, created for every device saperately;
+        const session = await Sessions.create({
+            user: user._id,
+            refreshTokenHash: hashedRefreshToken,
+            ip: req.ip,
+            userAgent: req.headers["user-agent"] //browser details of user
+        });
+
+        //accessToken;
+        const accessToken = jwt.sign(
+            {
+                //id of user, who currently logged in;
+                id: user._id,
+                sessionId: session._id //different devices of user have different session id
+                //so by loging out from one devic dont let logout from other device of user
+                //untill user wants to complete remove the session(logout from all the devices);
+            },
+            process.env.JWT_SECRET,
+            {
+                expiresIn: "15m"
+            }
+        );
+
         // store the token in cookie
         //this cookie will be sent with every future requests;
         //now we only store refresh token inside http-only cookie
         res.cookie("refreshToken", refreshToken, {
-            httpOnly: true,
+            httpOnly: true, //javascript on the client-side cannot read token;
             secure: process.env.NODE_ENV === "production",
             sameSite: "strict",
             maxAge: 2 * 24 * 60 * 60 * 1000 //2d(same as expiresIn: 2d)
@@ -222,6 +229,27 @@ export const refreshToken = (req, res) => {
                 expiresIn: "15m"
             }
         );
+
+        //for more extra security, we will create new refreshToken as well and will delete or make old one invalid
+        //also we will maintain session of user, which contains, browser's version, ip, refreshToken etc
+        //will be store in db;
+
+        //new refreshToken also called rotating refreshToken, for more safty;
+        const newRefreshToken = jwt.sign({
+            id: decode.id
+        }, process.env.JWT_SECRET,
+            {
+                expiresIn: "2d"
+            }
+        )
+
+        //store new refresh token into cookie;
+        res.cookie("refreshToken", newRefreshToken, {
+            httpOnly: true, //javascript on the client-side cannot read token;
+            secure: process.env.NODE_ENV === "production",
+            sameSite: "strict",
+            maxAge: 2 * 24 * 60 * 60 * 1000 //2d(same as expiresIn: 2d)
+        });
 
         res.status(200).json({
             status: "Success",
