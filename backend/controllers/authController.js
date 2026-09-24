@@ -236,6 +236,7 @@ export const refreshToken = async (req, res) => {
     try {
         //get the refreshToken;
         const refToken = req.cookies.refreshToken;
+        console.log("Refresh Token from authController: ", refToken);
         //validate;
         if (!refToken) {
             return res.status(401).json({
@@ -250,7 +251,7 @@ export const refreshToken = async (req, res) => {
         //instead of directly, generating access and refreshToke, adding some verification layer;
         const hashedRefreshToken = crypto
             .createHash("sha256")
-            .update(refreshToken)
+            .update(refToken)
             .digest("hex");
 
         //session must not be invoked;
