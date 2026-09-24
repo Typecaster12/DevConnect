@@ -236,7 +236,7 @@ export const refreshToken = async (req, res) => {
     try {
         //get the refreshToken;
         const refToken = req.cookies.refreshToken;
-        console.log("Refresh Token from authController: ", refToken);
+
         //validate;
         if (!refToken) {
             return res.status(401).json({
@@ -324,3 +324,44 @@ export const refreshToken = async (req, res) => {
         })
     }
 };
+
+//to logout from all the devices;
+//not yet implemented for frontend, only for backend
+export const logoutFromAll = async (req, res) => {
+    try {
+        const refreshToken = req.cookies.refreshToken;
+
+        //validation;
+        if (!refreshToken) {
+            return res.status(400).json({
+                status: "Failed",
+                message: "RefreshToken not found, You are already logout"
+            });
+        }
+
+        const decode = jwt.verify(refreshToken, process.env.JWT_SECRET);
+
+        //now the logic is, just get all the sessions and revoked them all;
+        //and finally clear the refreshToken;
+        await Sessions.updateMany({
+            user: decode.id,
+            revoked: false
+        }, {
+            revoked: true
+        });
+
+        //clearing the refreshToken;
+        res.clearCookie("refreshToken");
+
+        res.status(200).json({
+            status: "Success",
+            message: "Logout from all the devices is successfull"
+        });
+    } catch (err) {
+        res.status(500).json({
+            status: "Failed",
+            message: err.message,
+        })
+    }
+
+}
