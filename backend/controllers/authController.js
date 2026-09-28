@@ -333,7 +333,7 @@ export const logoutFromAll = async (req, res) => {
 
         //validation;
         if (!refreshToken) {
-            return res.status(400).json({
+            return res.status(200).json({
                 status: "Failed",
                 message: "RefreshToken not found, You are already logout"
             });
@@ -355,7 +355,7 @@ export const logoutFromAll = async (req, res) => {
 
         res.status(200).json({
             status: "Success",
-            message: "Logout from all the devices is successfull"
+            message: "Logout is successfull"
         });
     } catch (err) {
         res.status(500).json({

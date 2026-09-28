@@ -99,3 +99,24 @@ export const logoutSession = async () => {
         throw err;
     }
 };
+
+//logout from all devices;
+export const logoutFromAll = async () => {
+    try {
+        const response = await fetch(`${BASE_URL}/auth/logoutAll`, {
+            method: "POST",
+            credentials: "include",
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            throw new Error(data.message || "Logout from all devices failed");
+        }
+
+        return data
+    } catch (err) {
+        console.log("Some Error occurred while logging out:", err);
+        throw err;
+    }
+};

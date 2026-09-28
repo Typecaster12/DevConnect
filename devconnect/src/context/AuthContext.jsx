@@ -1,4 +1,4 @@
-import { loginUser, logoutSession, refreshAccessToken, registerUser } from "@/Api/auth";
+import { loginUser, logoutFromAll, logoutSession, refreshAccessToken, registerUser } from "@/Api/auth";
 import { fetchLoggedUserDetails } from "@/Api/loggedUser";
 import { createContext, useEffect, useState } from "react";
 
@@ -74,15 +74,26 @@ const AuthContextProvider = ({ children }) => {
             //as backend removes the token of that user;
             setLoggedUser(null);
             setAccessToken(null);
-            console.log("Logout successfull", data);
         } catch (err) {
             console.log("Logout failed: ", err);
             throw err;
         }
     }
 
+    //from logout from all the devices;
+    const logoutAll = async () => {
+        try {
+            const data = await logoutFromAll();
+            setLoggedUser(null);
+            setAccessToken(null);
+        } catch (err) {
+            console.log("Logout from all devices failed: ", err);
+            throw err;
+        }
+    }
 
-    return <AuthContext.Provider value={{ loggedUser, loading, isUserAuthenticated, login, register, logout, accessToken }}>{children}</AuthContext.Provider>
+
+    return <AuthContext.Provider value={{ loggedUser, loading, isUserAuthenticated, login, register, logout, accessToken, logoutAll }}>{children}</AuthContext.Provider>
 }
 
 export default AuthContextProvider;

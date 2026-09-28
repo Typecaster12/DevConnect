@@ -1,4 +1,5 @@
 import jwt from "jsonwebtoken";
+import Sessions from "../models/Session.model.js";
 
 //this is the validatior layer;
 //verify, which user is currently making request;
@@ -10,8 +11,6 @@ export const authMiddleWare = async (req, res, next) => {
 
         //now we need accessToken sent by frontend;
         const authHeader = req.headers.authorization;
-        //testLog;
-        console.log("From MiddleWare: ", authHeader);
 
         if (!authHeader || !authHeader.startsWith("Bearer ")) {
             return res.status(401).json({
@@ -22,13 +21,6 @@ export const authMiddleWare = async (req, res, next) => {
 
         //extracting actual token;
         const accessToken = authHeader.split(" ")[1];
-        console.log("Accesstoken from middleware: ", accessToken);
-        // if (!userToken) {
-        //     return res.status(401).json({
-        //         status: "Failed",
-        //         message: "No Token Found, Please login first"
-        //     })
-        // }
 
         //verifying user, on the basis of token;
         //here we will take the token of user, and the jwt secret;
@@ -44,7 +36,22 @@ export const authMiddleWare = async (req, res, next) => {
             process.env.JWT_SECRET
         );
 
-        //if decode success; store the user's info into the request;
+        //first checking if the session is revoked or not, if yes, then accessToken will not be valid;
+        const session = await Sessions.findOne({
+            _id: decode.sessionId,
+            user: decode.id,
+            revoked: false
+        });
+
+        //if true then make the accessToken invalid;
+        if (!session) {
+            return res.status(401).json({
+                status: "Failed",
+                message: "Session revoked, invalid access token"
+            })
+        }
+
+        //if decode success; and session is not revoked, store the user's info into the request;
         req.user = decode;
 
         //continue to the next controller;
