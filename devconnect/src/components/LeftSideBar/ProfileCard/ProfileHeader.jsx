@@ -3,11 +3,15 @@ import {
     AvatarFallback,
     AvatarImage,
 } from "@/components/ui/avatar";
+import { AuthContext } from "@/context/AuthContext";
+import { useContext } from "react";
 
 const ProfileHeader = ({ userInfo }) => {
+    const { loggedUser } = useContext(AuthContext);
+
     // console.log("User info from profileHeader: ", userInfo);
 
-    const initials = `${userInfo?.firstName?.[0] || ""}${userInfo?.lastName?.[0] || ""}`
+    const initials = `${loggedUser?.personalInfo.firstName?.[0] || ""}${loggedUser?.personalInfo.lastName?.[0] || ""}`
         .toUpperCase();
 
     return (
@@ -16,8 +20,8 @@ const ProfileHeader = ({ userInfo }) => {
             <Avatar className="h-20 w-20">
 
                 <AvatarImage
-                    src={userInfo?.avatar || undefined}
-                    alt={`${userInfo?.firstName} ${userInfo?.lastName}`}
+                    src={loggedUser?.personalInfo.avatar || undefined}
+                    alt={`${loggedUser?.firstName} ${loggedUser?.lastName}`}
                 />
 
                 <AvatarFallback>
@@ -27,15 +31,15 @@ const ProfileHeader = ({ userInfo }) => {
             </Avatar>
 
             <h2 className="mt-4 text-lg font-semibold">
-                {userInfo?.firstName} {userInfo?.lastName}
+                {loggedUser?.personalInfo.firstName} {loggedUser?.personalInfo.lastName}
             </h2>
 
             <p className="mt-1 text-sm text-muted-foreground">
-                {userInfo?.headline}
+                {loggedUser?.personalInfo.username}
             </p>
 
             <p className="mt-3 text-sm text-muted-foreground leading-relaxed">
-                {userInfo?.bio}
+                {loggedUser?.bio}
             </p>
 
         </div>

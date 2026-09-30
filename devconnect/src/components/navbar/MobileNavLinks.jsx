@@ -1,3 +1,5 @@
+//this is for mobile navbar;
+//currently hardcoded
 import { NavLink } from "react-router-dom";
 import {
     House,
@@ -6,6 +8,8 @@ import {
     Settings,
     User,
 } from "lucide-react";
+import { useContext } from "react";
+import { AuthContext } from "@/context/AuthContext";
 
 const mobileLinks = [
     {
@@ -31,6 +35,14 @@ const mobileLinks = [
 ];
 
 const MobileNavLinks = () => {
+
+    const { loggedUser } = useContext(AuthContext);
+    //.personalInfo => contains the header info;
+
+    const initials = `${loggedUser?.personalInfo.firstName?.[0] || ""}${loggedUser?.personalInfo.lastName?.[0] || ""}`
+        .toUpperCase();
+
+    console.log("loggedUser's details from mobileNavbar: ", loggedUser);
     return (
         <div className="flex flex-col h-full">
 
@@ -41,17 +53,17 @@ const MobileNavLinks = () => {
                 <div className="flex items-center gap-3">
 
                     <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary text-primary-foreground font-bold">
-                        HM
+                        {initials}
                     </div>
 
                     <div>
 
                         <h3 className="font-semibold">
-                            Harsh Mishra
+                            {loggedUser?.personalInfo.firstName} {loggedUser?.personalInfo.lastName}
                         </h3>
 
                         <p className="text-sm text-muted-foreground">
-                            Frontend Developer
+                            {loggedUser?.personalInfo.username}
                         </p>
 
                     </div>

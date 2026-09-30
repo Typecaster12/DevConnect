@@ -1,11 +1,16 @@
-const ProfileStats = ({stats}) => {
+import { AuthContext } from "@/context/AuthContext";
+import { useContext } from "react";
+
+const ProfileStats = ({ stats }) => {
+    const { loggedUser } = useContext(AuthContext);
+    console.log("Logged from stats: ", loggedUser);
     return (
         <div className="grid grid-cols-3 gap-4 border-b py-6 text-center">
 
             <div>
 
                 <h3 className="font-semibold">
-                    {stats.followers}
+                    {loggedUser?.stats.followers}
                 </h3>
 
                 <p className="text-xs text-muted-foreground">
@@ -17,7 +22,7 @@ const ProfileStats = ({stats}) => {
             <div>
 
                 <h3 className="font-semibold">
-                    {stats.following}
+                    {loggedUser?.stats.following}
                 </h3>
 
                 <p className="text-xs text-muted-foreground">
@@ -29,7 +34,7 @@ const ProfileStats = ({stats}) => {
             <div>
 
                 <h3 className="font-semibold">
-                    {stats.posts}
+                    {loggedUser?.stats.posts}
                 </h3>
 
                 <p className="text-xs text-muted-foreground">

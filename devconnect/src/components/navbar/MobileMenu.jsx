@@ -11,8 +11,11 @@ import MobileNavLinks from "./MobileNavLinks";
 import ProfileCard from "../LeftSideBar/ProfileCard/ProfileCard";
 import QuickLinks from "../LeftSideBar/QuickLinks/QuickLinks";
 import UsersList from "../RightSideBar/UsersList";
+import { useContext } from "react";
+import { AuthContext } from "@/context/AuthContext";
 
 const MobileMenu = () => {
+     const { loggedUser } = useContext(AuthContext);
     return (
         <Sheet>
             <SheetTrigger className="inline-flex h-9 w-9 items-center justify-center rounded-md transition hover:bg-muted">
@@ -33,7 +36,7 @@ const MobileMenu = () => {
 
                     {/* User Profile */}
                     <div className="px-6">
-                        <ProfileCard />
+                        <ProfileCard userProfile={loggedUser?.personalInfo} userStats={loggedUser?.stats}/>
                     </div>
 
                     {/* Quick Links */}

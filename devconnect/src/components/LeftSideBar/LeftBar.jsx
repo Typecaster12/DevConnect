@@ -23,13 +23,14 @@ import QuickLinks from "./QuickLinks/QuickLinks";
 //         ├── QuickLinkItem.jsx    
 //         └── quickLinks.js       
 
+// { userProfile }
 const LeftSidebar = ({ userProfile }) => {
 
     return (
         <aside className="hidden lg:flex flex-col gap-6">
 
             {userProfile && (
-                <ProfileCard userProfile={userProfile} />
+                <ProfileCard />
             )}
 
             <QuickLinks />
