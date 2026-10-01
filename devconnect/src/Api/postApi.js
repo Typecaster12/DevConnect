@@ -16,6 +16,7 @@ export const fetchUserPost = async (accessToken) => {
             throw new Error("Failed to fetch posts.");
         }
         const data = await response.json();
+        console.log("data from postApi.js: ", data);
         return data;
 
     } catch (error) {

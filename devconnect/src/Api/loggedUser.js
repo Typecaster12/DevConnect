@@ -11,7 +11,7 @@ export const fetchLoggedUserDetails = async (accessToken) => {
         });
 
         if (!response.ok) {
-            throw new Error("Failed to fetch logged user's details")
+            throw new Error("Failed to fetch logged user's details");
         }
         const data = await response.json();
         return data;

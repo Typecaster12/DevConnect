@@ -39,6 +39,8 @@ const AuthContextProvider = ({ children }) => {
     }, []); //will run on every mount;
 
     //now to login user if not;
+
+    //this needs to be in useEffect so that will re-render on every data change as currently we have to refresh manually to get lates data specially the numbers of posts
     const login = async (email, password) => {
         try {
             const data = await loginUser(email, password); //if this trows error, catch block will be executed;
@@ -92,8 +94,18 @@ const AuthContextProvider = ({ children }) => {
         }
     }
 
+    //to fetch, latest data of user;
+    const refreshLoggedUserData = async () => {
+        try {
+            const data = await fetchLoggedUserDetails(accessToken);
+            setLoggedUser(data.details);
+        } catch (err) {
+            console.log("Error occured while refreshing data: ", err);
+            throw err;
+        }
+    }
 
-    return <AuthContext.Provider value={{ loggedUser, loading, isUserAuthenticated, login, register, logout, accessToken, logoutAll }}>{children}</AuthContext.Provider>
+    return <AuthContext.Provider value={{ loggedUser, loading, isUserAuthenticated, login, register, logout, accessToken, logoutAll, refreshLoggedUserData }}>{children}</AuthContext.Provider>
 }
 
 export default AuthContextProvider;

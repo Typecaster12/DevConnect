@@ -3,7 +3,6 @@ import { useContext } from "react";
 
 const ProfileStats = ({ stats }) => {
     const { loggedUser } = useContext(AuthContext);
-    console.log("Logged from stats: ", loggedUser);
     return (
         <div className="grid grid-cols-3 gap-4 border-b py-6 text-center">
 

@@ -18,7 +18,7 @@ const Feed = ({
 }) => {
 
     //get the accessToken;
-    const { accessToken } = useContext(AuthContext);
+    const { accessToken, refreshLoggedUserData } = useContext(AuthContext);
 
     //loading state;
     if (isLoading) {
@@ -32,7 +32,7 @@ const Feed = ({
 
             //ask parent to fetch latest posts + user profile;
             await onRefreshData();
-
+            await refreshLoggedUserData();
         } catch (error) {
             console.error("Error creating post: ", error);
         }
@@ -45,7 +45,7 @@ const Feed = ({
 
             //ask parent to fetch latest posts + user profile;
             await onRefreshData();
-
+            await refreshLoggedUserData();
         } catch (error) {
             console.error("Error deleting post: ", error);
         }
