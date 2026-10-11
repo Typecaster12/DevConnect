@@ -168,3 +168,61 @@ export const getLoggedUserProfile = async (req, res) => {
         })
     }
 }
+
+
+//search users, based on their name or userName;
+export const getMatchedUsers = async (req, res) => {
+    try {
+        const requestedData = req.query.q; //this will either contains the firstname or username or lastname or complete name;
+
+        if (!requestedData) {
+            return res.status(400).json({
+                status: "failed",
+                message: "Plese enter name to search for user"
+            })
+        }
+
+        //find the user based on the data recieved;
+        const users = await User.find({
+            $or: [
+                {
+                    "personalInfo.username": {
+                        $regex: requestedData,
+                        $options: "i"
+                    }
+                },
+                {
+                    "personalInfo.firstName": {
+                        $regex: requestedData,
+                        $options: "i"
+                    }
+                },
+                {
+                    "personalInfo.lastName": {
+                        $regex: requestedData,
+                        $options: "i"
+                    }
+                }
+            ]
+        });
+
+        if (users.length === 0) {
+            return res.status(404).json({
+                status: "Failed",
+                message: "User Not Found."
+            })
+        }
+
+        //finally return the users;
+        res.status(200).json({
+            status: "Success",
+            message: "User fetched Sucessfully",
+            usersData: users
+        })
+    } catch (err) {
+        return res.status(500).json({
+            status: "Failed",
+            error: err.message
+        })
+    }
+}

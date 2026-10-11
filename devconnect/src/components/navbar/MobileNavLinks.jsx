@@ -19,7 +19,7 @@ const mobileLinks = [
     },
     {
         label: "Developers",
-        path: "/developers",
+        path: "/search",
         icon: Users,
     },
     {
@@ -74,7 +74,7 @@ const MobileNavLinks = () => {
 
             {/* Search */}
 
-            <div className="py-5">
+            {/* <div className="py-5">
 
                 <input
                     type="text"
@@ -82,7 +82,7 @@ const MobileNavLinks = () => {
                     className="w-full rounded-lg border px-3 py-2 outline-none focus:ring-2 focus:ring-primary"
                 />
 
-            </div>
+            </div> */}
 
             {/* Links */}
 

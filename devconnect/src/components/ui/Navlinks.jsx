@@ -7,7 +7,7 @@ const navItems = [
   },
   {
     label: "Developers",
-    path: "/developers",
+    path: "/search",
   },
   {
     label: "Notifications",

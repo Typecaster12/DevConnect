@@ -1,5 +1,5 @@
 import express from 'express';
-import { createUserPost, deleteUserPost, fetchPost, getLoggedUserProfile, updateUserPost } from '../controllers/serverController.js';
+import { createUserPost, deleteUserPost, fetchPost, getLoggedUserProfile, getMatchedUsers, updateUserPost } from '../controllers/serverController.js';
 import { authMiddleWare } from '../middleware/authMiddleware.js';
 
 const router = express.Router();
@@ -19,7 +19,9 @@ router.delete("/posts/:id", deleteUserPost);
 //for update functionality
 router.patch("/posts/:id", updateUserPost);
 
-
 //for logged user profile(get);
 router.get("/user", getLoggedUserProfile);
+
+//for search functionality;
+router.get("/searchusers", getMatchedUsers);
 export default router;

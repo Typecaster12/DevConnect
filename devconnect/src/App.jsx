@@ -4,6 +4,7 @@ import ErrorPage from "./components/ui/ErrorPage";
 import FeedLayout from "./components/feedLayout/FeedLayout";
 import Login from "./pages/login";
 import Logou from "./pages/logou";
+import SearchPage from "./pages/SearchPage";
 
 const router = createBrowserRouter([
   {
@@ -26,6 +27,10 @@ const router = createBrowserRouter([
         index: true,
         element: <FeedLayout />,
       },
+      {
+        path: "/search",
+        element: <SearchPage />
+      }
     ],
   },
 ]);

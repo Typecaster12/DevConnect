@@ -1,25 +1,29 @@
-// import Logo from "./Logo";
-// import Search from "../ui/Search";
-// import NavLinks from "../ui/NavLinks";
-// import UserMenu from "./UserMenu";
-// import MobileMenu from "./MobileMenu";
-
 import Logo from "../ui/Logo";
 import NavLinks from "../ui/Navlinks";
-import Search from "../ui/Search";
 import MobileMenu from "./MobileMenu";
 import UserMenu from "./UserMenu";
+import { Search } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 const Navbar = () => {
+    const navigate = useNavigate();
+
     return (
         <header className="sticky top-0 z-50 border-b bg-background/80 backdrop-blur-md">
             <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4">
 
-                <Logo />
+                {/* Left Section */}
+                <div className="flex items-center gap-6">
+                    <Logo />
 
-                {/* Desktop Search */}
-                <div className="hidden flex-1 px-8 lg:flex">
-                    <Search />
+                    {/* Search */}
+                    {/* <button
+                        onClick={() => navigate("/search")}
+                        className="flex items-center justify-center rounded-full p-2 transition-colors hover:bg-muted"
+                        aria-label="Search developers"
+                    >
+                        <Search size={22} />
+                    </button> */}
                 </div>
 
                 {/* Desktop Navigation */}
