@@ -4,7 +4,8 @@ import morgan from "morgan";
 import router from "./routes/router.js";
 import authRouter from "./routes/authRouter.js";
 import cookieParser from "cookie-parser";
-import { apiLimiter } from "./middleware/rateLimiter.js";
+import { apiLimiter } from "./middleware/userEndPointsLimiter.js";
+import { apiThrottle } from "./middleware/userEndPThrottel.js";
 
 const app = express();
 
@@ -19,7 +20,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(morgan("dev"));
 
 //rate-limiter middleware;
-app.use("/api", apiLimiter);
+app.use("/api", apiLimiter, apiThrottle);
 
 //routes
 app.use("/auth", authRouter);
