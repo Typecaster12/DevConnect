@@ -1,147 +1,263 @@
 # DevConnect
 
-DevConnect is a JavaScript-first web application that helps developers discover each other, showcase projects, and collaborate. The repository is primarily implemented with JavaScript, with supporting CSS and HTML assets.
+DevConnect is a developer-focused social networking and collaboration platform built with a React frontend and an Express + MongoDB backend. It enables users to register, log in, create and manage posts, view their profile, and search for other developers based on name or username.
 
-> NOTE: This README is written to match the current state of the repository (mostly JavaScript + CSS + HTML). If your project includes a separate backend, database, or additional services, update the "Environment" and "Running locally" sections below with the correct details.
+This project is designed as a full-stack application where the frontend is separated from the backend and the backend uses JWT-based authentication with refresh-token rotation and secure cookie handling.
 
-## Table of contents
+## Features
 
-- Project overview
-- Built with
-- Getting started
-  - Prerequisites
-  - Installation
-  - Environment variables
-  - Running locally
-  - Building for production
-- Testing
-- Project structure
-- Contributing
-- License
-- Contact
+- User registration and login
+- JWT authentication with access tokens and refresh tokens
+- Secure cookie-based refresh token storage
+- Logout and logout-all support
+- Protected routes for authenticated users
+- Create, read, update, and delete posts
+- User profile retrieval with stats
+- Search for users by first name, last name, or username
+- Responsive frontend built with React + Vite
+- Modular component-based UI
+- Rate limiting and throttling for API protection
+- MongoDB-powered persistence for users and posts
 
-## Project overview
+## Tech Stack
 
-This repo (DevConnect) contains a front-end web application (and any supporting client-side code) implemented primarily in JavaScript with CSS for styling and some HTML assets. The project aims to provide a user-friendly interface for developers to share projects and connect, and it is organized to be easy to develop and extend.
+### Frontend
+- React 19
+- Vite
+- React Router
+- Tailwind CSS
+- Axios
+- Lucide icons
+- Shadcn-style UI components
 
-If your repository also contains a Node/Express or other backend, you can add a `server/` section or move backend-specific instructions into a `backend/README.md`.
+### Backend
+- Node.js
+- Express.js
+- MongoDB with Mongoose
+- JWT for authentication
+- bcrypt for password hashing
+- cookie-parser
+- CORS
+- express-rate-limit
+- express-slow-down
+- Morgan for request logging
 
-## Built with
+## Project Structure
 
-- JavaScript (core application logic)
-- CSS (styles)
-- HTML (static assets)
+```bash
+DevConnect/
+├── backend/
+│   ├── app.js
+│   ├── server.js
+│   ├── package.json
+│   ├── package-lock.json
+│   ├── .gitignore
+│   ├── config/
+│   │   └── db.js
+│   ├── controllers/
+│   │   ├── authController.js
+│   │   └── serverController.js
+│   ├── middleware/
+│   │   ├── authLimiter.js
+│   │   ├── authMiddleware.js
+│   │   ├── authThrottel.js
+│   │   ├── userEndPointsLimiter.js
+│   │   └── userEndPThrottel.js
+│   ├── models/
+│   │   ├── Posts.model.js
+│   │   ├── Session.model.js
+│   │   └── Users.model.js
+│   ├── routes/
+│   │   ├── authRouter.js
+│   │   └── router.js
+│   ├── data/
+│   ├── seed/
+│   └── utils/
+├── devconnect/
+│   ├── package.json
+│   ├── package-lock.json
+│   ├── vite.config.js
+│   ├── index.html
+│   ├── eslint.config.js
+│   ├── components.json
+│   ├── jsconfig.json
+│   ├── src/
+│   │   ├── App.jsx
+│   │   ├── App.css
+│   │   ├── index.css
+│   │   ├── main.jsx
+│   │   ├── Api/
+│   │   ├── AppLayout/
+│   │   ├── components/
+│   │   │   ├── DialogBoxes/
+│   │   │   ├── LeftSideBar/
+│   │   │   ├── RightSideBar/
+│   │   │   ├── feedLayout/
+│   │   │   ├── navbar/
+│   │   │   └── ui/
+│   │   ├── context/
+│   │   ├── lib/
+│   │   ├── mock/
+│   │   └── pages/
+│   │       ├── SearchPage.jsx
+│   │       ├── login.jsx
+│   │       └── logou.jsx
+├── README.md
+├── TaskSeparation.md
+└── .gitignore
+```
 
-Optional / commonly used with this stack (update if different):
-- Node.js and npm or Yarn
-- A front-end framework (React, Vue, or plain JS)
+## Backend API Overview
 
-## Getting started
+The backend is served from the `backend/` folder and exposes authentication and data endpoints.
 
-Follow these instructions to get a copy of the project running on your local machine for development and testing purposes.
+### Authentication routes
+- `POST /auth/registration`
+- `POST /auth/login`
+- `POST /auth/logout`
+- `GET /auth/refresh-token`
+- `POST /auth/logoutAll`
+
+### Protected application routes
+- `GET /api/posts`
+- `POST /api/posts`
+- `PATCH /api/posts/:id`
+- `DELETE /api/posts/:id`
+- `GET /api/user`
+- `GET /api/searchusers`
+
+### Notes
+- Protected routes use JWT verification via middleware.
+- Refresh tokens are stored in HttpOnly cookies.
+- Authentication uses secure session management with hashed refresh tokens.
+- MongoDB is used as the primary database.
+- Rate limiting and throttling are enabled for auth and general user endpoints.
+
+## Frontend Overview
+
+The frontend in `devconnect/` is a Vite-powered React application with:
+- login and logout flows
+- social feed layout
+- profile and search pages
+- reusable UI components
+- modular structure for future expansion
+
+The app is designed around a developer-centric social feed experience, where users can interact with content and discover others through search and profile views.
+
+## Getting Started
 
 ### Prerequisites
+- Node.js 18+
+- npm or yarn
+- MongoDB instance or MongoDB Atlas connection
+- Git
 
-- Node.js (v16+ recommended) and npm (or Yarn)
-- git
+## Backend Setup
 
-### Installation
+1. Navigate to the backend folder:
+   ```bash
+   cd backend
+   ```
 
-1. Clone the repository
-
-   git clone https://github.com/Typecaster12/DevConnect.git
-   cd DevConnect
-
-2. Install dependencies
-
+2. Install dependencies:
+   ```bash
    npm install
-   # or
-   yarn install
+   ```
 
-### Environment variables
+3. Create a `.env` file in the `backend/` directory:
+   ```env
+   PORT=5000
+   MONGO_URI=mongodb://localhost:27017/devconnect
+   JWT_SECRET=your_super_secret_key
+   NODE_ENV=development
+   ```
 
-If the app requires runtime configuration, create a `.env` file in the project root and add the keys your app needs. Example:
+4. Start the backend:
+   ```bash
+   npm run dev
+   ```
 
-```
-# .env.example
-NODE_ENV=development
-PORT=3000
-API_URL=http://localhost:4000
-JWT_SECRET=your_jwt_secret_here
-DATABASE_URL=postgres://user:pass@localhost:5432/devconnect
-```
+The backend runs on:
+- http://localhost:5000
 
-Update or remove the values above to match your project.
+## Frontend Setup
 
-### Running locally
+1. Navigate to the frontend folder:
+   ```bash
+   cd devconnect
+   ```
 
-Start the development server (common scripts shown; if your project uses different scripts, update accordingly):
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
 
-```
-npm run dev
-# or
-npm start
-```
+3. Start the frontend:
+   ```bash
+   npm run dev
+   ```
 
-Open http://localhost:3000 (or the configured PORT) in your browser.
+The frontend runs on:
+- http://localhost:5173
 
-### Building for production
+## Production Build
 
-```
+### Frontend
+```bash
+cd devconnect
 npm run build
 ```
 
-Then serve the `build/` or `dist/` directory with your preferred static server or deploy to your hosting provider.
-
-## Testing
-
-If you have tests set up, run:
-
-```
-npm test
+### Backend
+```bash
+cd backend
+npm start
 ```
 
-If no test runner exists yet, consider adding Jest, Mocha, or another framework and updating this section.
+## Environment Notes
 
-## Project structure (suggested)
+- Frontend is configured to communicate with the backend at `http://localhost:5000` through API calls.
+- Backend CORS is configured for `http://localhost:5173`.
+- The project expects a valid MongoDB connection in `MONGO_URI`.
+- JWT secret must be set for authentication and refresh token validation.
 
-A typical layout for a JS front-end project. Adapt to your repository's actual structure.
+## Current Status
 
-```
-DevConnect/
-├─ public/           # static HTML and assets
-├─ src/              # source JavaScript files
-│  ├─ components/    # UI components
-│  ├─ styles/        # CSS files
-│  └─ index.js       # app entry
-├─ .env.example
-├─ package.json
-└─ README.md
-```
+This repository currently includes:
+- a working backend authentication system
+- user registration and login flow
+- JWT-based protected API routes
+- post CRUD functionality
+- profile retrieval
+- search by username or name
+- a Vite React frontend with structured pages and UI components
+
+The project follows a modular architecture and is structured to support future feature expansion such as:
+- follow/follower system
+- notifications
+- richer profile editing
+- post comments and likes
+- deploy-ready production setup
 
 ## Contributing
 
-Contributions are welcome. Typical workflow:
-
+Contributions are welcome. To contribute:
 1. Fork the repository
-2. Create a feature branch (git checkout -b feature/name)
-3. Commit your changes (git commit -m "feat: description")
-4. Push to your fork and open a pull request
+2. Create a feature branch
+3. Commit your changes
+4. Push to your branch
+5. Open a pull request
 
-Please include tests and update the README if you add features or change behavior.
+Please keep changes modular and maintain the separation between frontend and backend logic.
 
 ## License
 
-This project does not include a license file by default. If you want to use an open-source license, consider adding a `LICENSE` file (for example, MIT).
+This project does not currently include a license file. If you want to publish or share the project publicly, consider adding an open-source license such as MIT.
 
 ## Contact
 
-Maintainer: Typecaster12
+Project owner: Typecaster12
 
----
+## Summary
 
-If you'd like, I can:
-- Update this README with concrete scripts and environment variables by reading package.json and other files in the repo, or
-- Add a LICENSE file (MIT) and a .env.example with the exact keys the app expects.
-
-Tell me which of those you'd like and I'll apply the changes.
+DevConnect is a full-stack developer networking application with a React frontend and Express/MongoDB backend. It currently supports authentication, protected API routes, user searching, post creation and management, and a structured frontend layout for a social networking experience for developers.
