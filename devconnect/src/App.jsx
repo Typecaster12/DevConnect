@@ -5,6 +5,7 @@ import FeedLayout from "./components/feedLayout/FeedLayout";
 import Login from "./pages/login";
 import Logou from "./pages/logou";
 import SearchPage from "./pages/SearchPage";
+import ProfileDetails from "./components/LeftSideBar/ProfileCard/ProfileDetails";
 
 const router = createBrowserRouter([
   {
@@ -30,6 +31,10 @@ const router = createBrowserRouter([
       {
         path: "/search",
         element: <SearchPage />
+      },
+      {
+        path: "/userProfile", //view profile
+        element: <ProfileDetails />
       }
     ],
   },

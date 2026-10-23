@@ -28,6 +28,7 @@ const Login = () => {
   };
   
   const handleLoginChange = ({ target: { name, value } }) => setLoginDetails((current) => ({ ...current, [name]: value }));
+  
   const handleRegistrationChange = ({ target: { name, value } }) => setRegistrationDetails((current) => ({ ...current, [name]: value }));
 
   const handleSubmit = async (event) => {

@@ -1,5 +1,6 @@
 import { loginUser, logoutFromAll, logoutSession, refreshAccessToken, registerUser } from "@/Api/auth";
 import { fetchLoggedUserDetails } from "@/Api/loggedUser";
+import { fetchUserPost } from "@/Api/postApi";
 import { createContext, useEffect, useState } from "react";
 
 export const AuthContext = createContext();
@@ -11,6 +12,11 @@ const AuthContextProvider = ({ children }) => {
     const [loading, setLoading] = useState(true);
     //we are now storing the accessToken inside the memory;
     const [accessToken, setAccessToken] = useState(null);
+
+    //state to hold the posts of loggedUser;
+    const [posts, setPosts] = useState([]);
+    const [userProfile, setUserProfile] = useState(null);
+    const [isLoading, setIsLoading] = useState(true);
 
     //tracker, to track if the user authenticated or not?
     const isUserAuthenticated = !!loggedUser;
@@ -46,6 +52,8 @@ const AuthContextProvider = ({ children }) => {
             const data = await loginUser(email, password); //if this trows error, catch block will be executed;
             //response from backend = {status,message,accessToken},
             setAccessToken(data.accessToken);
+
+            // console.log("AccessToken from contextapi: ", data.accessToken);
 
             //if successfull we have to call next function reponsible for fetching user data;
             //pass the accessToken as parameter;
@@ -105,7 +113,63 @@ const AuthContextProvider = ({ children }) => {
         }
     }
 
-    return <AuthContext.Provider value={{ loggedUser, loading, isUserAuthenticated, login, register, logout, accessToken, logoutAll, refreshLoggedUserData }}>{children}</AuthContext.Provider>
+    //new methods, will remove from here if something goes wrong
+    //for fetching posts;
+    const getPostData = async () => {
+        try {
+            const data = await fetchUserPost(accessToken);
+
+            //update the post list;
+            setPosts(data.posts || []);
+
+        } catch (err) {
+            console.error(
+                "Error occured while fetching posts: ",
+                err.message
+            );
+        }
+    };
+
+    //for fetching logged-in user's details;
+    const getLoggedUserData = async () => {
+        try {
+            const data = await fetchLoggedUserDetails(accessToken);
+            //update logged-in user's profile;
+            setUserProfile(data.details);
+
+        } catch (err) {
+            console.error(
+                "Error occured while fetching logged user: ",
+                err.message
+            );
+        }
+    };
+
+    //refresh posts + logged-in user's profile;
+    const refreshData = async () => {
+        await Promise.all([
+            getPostData(),
+            getLoggedUserData(),
+        ]);
+    };
+
+    //initial data fetching;
+    useEffect(() => {
+        if (!accessToken) return;
+
+        const loadData = async () => {
+            try {
+                await refreshData();
+            } finally {
+                setIsLoading(false);
+            }
+        };
+
+        loadData();
+    }, [accessToken]);
+
+
+    return <AuthContext.Provider value={{ loggedUser, loading, isUserAuthenticated, login, register, logout, accessToken, logoutAll, refreshLoggedUserData, posts, userProfile, isLoading, refreshData }}>{children}</AuthContext.Provider>
 }
 
 export default AuthContextProvider;

@@ -174,6 +174,7 @@ export const getLoggedUserProfile = async (req, res) => {
 export const getMatchedUsers = async (req, res) => {
     try {
         const requestedData = req.query.q; //this will either contains the firstname or username or lastname or complete name;
+        // console.log(requestedData);
 
         if (!requestedData) {
             return res.status(400).json({
@@ -199,6 +200,12 @@ export const getMatchedUsers = async (req, res) => {
                 },
                 {
                     "personalInfo.lastName": {
+                        $regex: requestedData,
+                        $options: "i"
+                    }
+                },
+                {
+                    "personalInfo.username": {
                         $regex: requestedData,
                         $options: "i"
                     }

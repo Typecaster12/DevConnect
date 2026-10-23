@@ -11,14 +11,10 @@ import {
 import LoadingSpinner from "@/components/ui/loadingSpinner";
 import { AuthContext } from "@/context/AuthContext";
 
-const Feed = ({
-    posts, //all the posts
-    isLoading,
-    onRefreshData
-}) => {
+const Feed = () => {
 
     //get the accessToken;
-    const { accessToken, refreshLoggedUserData } = useContext(AuthContext);
+    const { accessToken, refreshLoggedUserData, posts, isLoading, refreshData } = useContext(AuthContext);
 
     //loading state;
     if (isLoading) {
@@ -31,7 +27,7 @@ const Feed = ({
             await createUserPost(content, accessToken);
 
             //ask parent to fetch latest posts + user profile;
-            await onRefreshData();
+            await refreshData();
             await refreshLoggedUserData();
         } catch (error) {
             console.error("Error creating post: ", error);
@@ -44,7 +40,7 @@ const Feed = ({
             await deleteUserPost(postId, accessToken);
 
             //ask parent to fetch latest posts + user profile;
-            await onRefreshData();
+            await refreshData();
             await refreshLoggedUserData();
         } catch (error) {
             console.error("Error deleting post: ", error);
@@ -57,7 +53,7 @@ const Feed = ({
             await updateUserPost(postId, newPostContent, accessToken);
 
             //ask parent to fetch latest posts + user profile;
-            await onRefreshData();
+            await refreshData();
 
         } catch (error) {
             console.error("Error updating post: ", error);
@@ -76,6 +72,7 @@ const Feed = ({
             </div>
 
             <div className="space-y-5">
+
 
                 <FeedList
                     posts={posts}
