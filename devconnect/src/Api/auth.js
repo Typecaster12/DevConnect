@@ -59,25 +59,40 @@ export const registerUser = async (firstName, lastName, username, email, passwor
 }
 
 //refresh access token api layer
+//as react's strictmode is sending two requests concurently
+//so two different request is made and controller is rotating refreshToken twice
+//so thats why our app throws 401 as it has old(first request's refreshtoken);
+//but controller is validating new refreshToken(due to second request);
+let refreshPromise = null;
 export const refreshAccessToken = async () => {
-    try {
-        const response = await fetch(`${BASE_URL}/auth/refresh-token`, {
-            method: "GET",
-            credentials: "include",
-        });
-
-        const data = await response.json();
-
-        if (!response.ok) {
-            throw new Error(data.message || "Failed to refresh access token");
-        }
-
-        return data;
-    } catch (err) {
-        console.log("Some Error occurred while refreshing access token:", err);
-        throw err;
+    if (refreshPromise) {
+        return refreshPromise;
     }
-}
+
+    refreshPromise = (async () => {
+        try {
+            const response = await fetch(`${BASE_URL}/auth/refresh-token`, {
+                method: "GET",
+                credentials: "include",
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                throw new Error(
+                    data.message || "Failed to refresh access token"
+                );
+            }
+
+            return data;
+        } finally {
+            //once this request is finishe, make the tarcker null again;
+            refreshPromise = null;
+        }
+    })();
+
+    return refreshPromise;
+};
 
 //logout api layer; 
 export const logoutSession = async () => {

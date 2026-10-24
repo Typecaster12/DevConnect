@@ -234,7 +234,7 @@ export const userLogout = async (req, res) => {
 //we have to make one controller function for generating new accessToken(once it will get expired);
 export const refreshToken = async (req, res) => {
     try {
-        //get the refreshToken;
+        //get the refreshToken current;
         const refToken = req.cookies.refreshToken;
 
         //validate;
@@ -255,6 +255,7 @@ export const refreshToken = async (req, res) => {
             .digest("hex");
 
         //session must not be invoked;
+        //means user should be logedin;
         const thisSession = await Sessions.findOne({
             refreshTokenHash: hashedRefreshToken,
             revoked: false
