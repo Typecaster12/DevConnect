@@ -28,11 +28,11 @@ import { useContext } from "react";
 // { userProfile }
 const LeftSidebar = () => {
 
-    const { userProfile} = useContext(AuthContext);
+    const { loggedUser } = useContext(AuthContext);
     return (
         <aside className="hidden lg:flex flex-col gap-6">
 
-            {userProfile && (
+            {loggedUser && (
                 <ProfileCard />
             )}
 

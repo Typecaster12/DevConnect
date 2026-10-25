@@ -15,7 +15,7 @@ const AuthContextProvider = ({ children }) => {
 
     //state to hold the posts of loggedUser;
     const [posts, setPosts] = useState([]);
-    const [userProfile, setUserProfile] = useState(null);
+    // const [userProfile, setUserProfile] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
 
     //tracker, to track if the user authenticated or not?
@@ -69,7 +69,7 @@ const AuthContextProvider = ({ children }) => {
     const register = async (firstName, lastName, username, email, password) => {
         try {
             const registerData = await registerUser(firstName, lastName, username, email, password);
-            console.log("Registration successfully: ", registerData);
+            // console.log("Registration successfully: ", registerData);
         } catch (err) {
             console.log("Registration failed: ", err);
             throw err;
@@ -135,7 +135,10 @@ const AuthContextProvider = ({ children }) => {
         try {
             const data = await fetchLoggedUserDetails(accessToken);
             //update logged-in user's profile;
-            setUserProfile(data.details);
+            // setUserProfile(data.details); //can be replaced by setLoggedUser
+            //as we have to state containig same user's details so we have to delete one
+
+            setLoggedUser(data.details);
 
         } catch (err) {
             console.error(
@@ -169,7 +172,7 @@ const AuthContextProvider = ({ children }) => {
     }, [accessToken]);
 
 
-    return <AuthContext.Provider value={{ loggedUser, loading, isUserAuthenticated, login, register, logout, accessToken, logoutAll, refreshLoggedUserData, posts, userProfile, isLoading, refreshData }}>{children}</AuthContext.Provider>
+    return <AuthContext.Provider value={{ loggedUser, loading, isUserAuthenticated, login, register, logout, accessToken, logoutAll, refreshLoggedUserData, posts, isLoading, refreshData }}>{children}</AuthContext.Provider>
 }
 
 export default AuthContextProvider;
