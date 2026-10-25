@@ -1,21 +1,17 @@
-import { useContext, useEffect, useState } from "react";
-
 import Feed from "./Feed/Feed";
 import LeftBar from "../LeftSideBar/LeftBar";
-import RightBar from "../RightSideBar/RightBar";
 
 // import { fetchUserPost } from "@/Api/postApi";
 // import { fetchLoggedUserDetails } from "@/Api/loggedUser";
-import { AuthContext } from "@/context/AuthContext";
 
 const FeedLayout = () => {
     //get accessToken from AuthContext;
     // const { userProfile} = useContext(AuthContext);
 
     return (
-        <section className="mx-auto max-w-7xl px-4 py-6">
+        <section className="mx-auto max-w-7xl px-4 py-6 pr-20">
 
-            <div className="grid grid-cols-1 gap-6 lg:grid-cols-[280px_1fr] xl:grid-cols-[280px_1fr_320px]">
+            <div className="grid grid-cols-1 gap-6 lg:grid-cols-[280px_minmax(0,1fr)]">
 
                 <LeftBar
                 //now contains the userInfo to be displayed on the leftbar;
@@ -28,7 +24,7 @@ const FeedLayout = () => {
                 /> */}
 
                 <Feed />
-                <RightBar />
+                {/* <RightBar /> */}
 
             </div>
 

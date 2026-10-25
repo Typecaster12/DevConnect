@@ -1,6 +1,7 @@
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import CreatePost from "./CreatePost/CreatePost";
 import FeedList from "./FeedList";
+import FeedSidebar from "./FeedSidebar";
 
 import {
     createUserPost,
@@ -10,16 +11,18 @@ import {
 
 import LoadingSpinner from "@/components/ui/loadingSpinner";
 import { AuthContext } from "@/context/AuthContext";
+import {
+    Dialog,
+    DialogContent,
+    DialogHeader,
+    DialogTitle,
+} from "@/components/ui/dialog";
 
 const Feed = () => {
 
     //get the accessToken;
     const { accessToken, refreshLoggedUserData, posts, isLoading, refreshData } = useContext(AuthContext);
-
-    //loading state;
-    if (isLoading) {
-        return <LoadingSpinner />;
-    }
+    const [isComposerOpen, setIsComposerOpen] = useState(false);
 
     //function to handle new post creation;
     const handleCreatePost = async (content) => {
@@ -29,6 +32,7 @@ const Feed = () => {
             //ask parent to fetch latest posts + user profile;
             await refreshData();
             await refreshLoggedUserData();
+            setIsComposerOpen(false);
         } catch (error) {
             console.error("Error creating post: ", error);
         }
@@ -61,28 +65,32 @@ const Feed = () => {
     };
 
     return (
-        <section className="relative">
+        <>
+            <FeedSidebar onCreatePost={() => setIsComposerOpen(true)} />
 
-            <div className="sticky top-20 z-20 bg-background pb-6">
+            <Dialog open={isComposerOpen} onOpenChange={setIsComposerOpen}>
+                <DialogContent className="overflow-hidden p-0 sm:max-w-xl">
+                    <DialogHeader className="sr-only">
+                        <DialogTitle>Create a post</DialogTitle>
+                    </DialogHeader>
+                    <CreatePost onCreatePost={handleCreatePost} />
+                </DialogContent>
+            </Dialog>
 
-                <CreatePost
-                    onCreatePost={handleCreatePost}
-                />
-
-            </div>
-
-            <div className="space-y-5">
-
-
-                <FeedList
-                    posts={posts}
-                    onDeleteUserPost={handleDeletePost}
-                    onUpdateUserPost={handleUpdatePost}
-                />
-
-            </div>
-
-        </section>
+            <section className="relative lg:h-[calc(100dvh-7rem)] lg:overflow-y-auto lg:overscroll-contain">
+                {isLoading ? (
+                    <LoadingSpinner />
+                ) : (
+                    <div className="space-y-5">
+                        <FeedList
+                            posts={posts}
+                            onDeleteUserPost={handleDeletePost}
+                            onUpdateUserPost={handleUpdatePost}
+                        />
+                    </div>
+                )}
+            </section>
+        </>
     );
 };
 
