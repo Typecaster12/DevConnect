@@ -62,6 +62,14 @@ export const deleteUserPost = async (req, res) => {
         //first get the id of the post;
         const { id } = req.params;
 
+        //id validation;
+        if (!id) {
+            return res.status(400).json({
+                status: "Failed",
+                message: "Id is not found or not in expected forma"
+            })
+        }
+
         //we will find the post's id and then delete it using findOneAndDelete;
         const deletedPost = await Post.findOneAndDelete({
             _id: id, //this is of post id;
@@ -70,7 +78,7 @@ export const deleteUserPost = async (req, res) => {
 
         //checking, if post exists or not;
         if (!deletedPost) {
-            return res.status(400).json({
+            return res.status(404).json({
                 status: "Failed",
                 message: "Post not found or you are not the owner."
             })
@@ -92,6 +100,14 @@ export const deleteUserPost = async (req, res) => {
 export const updateUserPost = async (req, res) => {
     try {
         const { id } = req.params;
+
+        //id validation;
+        if (!id) {
+            return res.status(400).json({
+                status: "Failed",
+                message: "Id is not found or not in expected forma"
+            })
+        }
 
         //fetch user's new post's content;
         const { newPostContent } = req.body;

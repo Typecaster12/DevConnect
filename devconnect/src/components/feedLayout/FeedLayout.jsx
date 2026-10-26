@@ -9,7 +9,7 @@ const FeedLayout = () => {
     // const { userProfile} = useContext(AuthContext);
 
     return (
-        <section className="mx-auto max-w-7xl px-4 py-6 pr-20">
+        <section className="mx-auto max-w-7xl px-4 py-6 pb-24 lg:pr-20 lg:pb-6">
 
             <div className="grid grid-cols-1 gap-6 lg:grid-cols-[280px_minmax(0,1fr)]">
 

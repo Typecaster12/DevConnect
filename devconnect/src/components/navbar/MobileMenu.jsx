@@ -10,7 +10,6 @@ import MobileNavLinks from "./MobileNavLinks";
 
 import ProfileCard from "../LeftSideBar/ProfileCard/ProfileCard";
 import QuickLinks from "../LeftSideBar/QuickLinks/QuickLinks";
-import UsersList from "../RightSideBar/UsersList";
 import { useContext } from "react";
 import { AuthContext } from "@/context/AuthContext";
 
@@ -42,13 +41,6 @@ const MobileMenu = () => {
                     {/* Quick Links */}
                     <div className="px-6">
                         <QuickLinks />
-                    </div>
-
-                    <div className="border-t" />
-
-                    {/* Suggested Developers */}
-                    <div className="px-6 pb-6">
-                        <UsersList />
                     </div>
                 </div>
             </SheetContent>

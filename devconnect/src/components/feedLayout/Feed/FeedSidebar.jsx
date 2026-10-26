@@ -22,7 +22,7 @@ const FeedSidebar = ({ onCreatePost }) => {
         }`;
 
     return (
-        <aside className="fixed top-16 right-0 bottom-0 z-40 flex w-16 flex-col items-center gap-5 border-l bg-background/95 py-6 text-foreground backdrop-blur-md lg:w-[72px]">
+        <aside className="fixed inset-x-0 bottom-0 z-40 flex h-[calc(4rem+env(safe-area-inset-bottom))] items-center justify-around border-t bg-background/95 pb-[env(safe-area-inset-bottom)] text-foreground backdrop-blur-md lg:top-16 lg:right-0 lg:bottom-0 lg:left-auto lg:h-auto lg:w-[72px] lg:flex-col lg:justify-start lg:gap-5 lg:border-t-0 lg:border-l lg:py-6 lg:pb-6">
             <NavLink to="/" aria-label="Feed" title="Feed" className={linkClassName}>
                 <Home className="size-6" />
             </NavLink>
