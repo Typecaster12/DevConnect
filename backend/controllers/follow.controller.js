@@ -80,3 +80,58 @@ export const followRelation = async (req, res) => {
         })
     }
 }
+
+export const unFollowRelation = async (req, res) => {
+    try {
+        const followerId = req.user.id;
+
+        if (!mongoose.isObjectIdOrHexString(followerId)) {
+            return res.status(400).json({
+                status: "Failed",
+                message: "Invalid ID format"
+            });
+        }
+
+        const followingId = req.params.id;
+
+        //id validation;
+        if (!followingId || !mongoose.isObjectIdOrHexString(followingId)) {
+            return res.status(400).json({
+                status: "Failed",
+                message: "Invalid ID format or User id not found"
+            });
+        }
+
+        const isUserPresent = await User.findById(followingId);
+        if (!isUserPresent) {
+            return res.status(404).json({
+                status: "Failed",
+                message: "User Not found"
+            })
+        }
+
+        const relation = await Follow.findOne({
+            follower: followerId,
+            following: followingId
+        });
+
+        if (relation) {
+            await Follow.findByIdAndDelete(relation._id);
+
+            return res.status(200).json({
+                status: "Success",
+                message: "Unfollowed successfully"
+            });
+        }
+
+        res.status(404).json({
+            status: "Failed",
+            message: "Follow first, then you can unfollow this user"
+        });
+    } catch (err) {
+        res.status(500).json({
+            status: "Failed",
+            error: err.message,
+        })
+    }
+}
