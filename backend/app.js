@@ -6,6 +6,7 @@ import authRouter from "./routes/authRouter.js";
 import cookieParser from "cookie-parser";
 import { apiLimiter } from "./middleware/userEndPointsLimiter.js";
 import { apiThrottle } from "./middleware/userEndPThrottel.js";
+import followRouter from "./routes/follow.route.js";
 
 const app = express();
 
@@ -25,6 +26,7 @@ app.use("/api", apiLimiter, apiThrottle);
 //routes
 app.use("/auth", authRouter);
 app.use("/api", router);
+app.use("/user", followRouter)
 
 //wildcard route;
 app.use((req, res) => {

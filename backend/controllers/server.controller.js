@@ -63,11 +63,11 @@ export const deleteUserPost = async (req, res) => {
         const { id } = req.params;
 
         //id validation;
-        if (!id) {
+        if (!mongoose.isObjectIdOrHexString(id)) {
             return res.status(400).json({
                 status: "Failed",
-                message: "Id is not found or not in expected forma"
-            })
+                message: "Invalid ID format"
+            });
         }
 
         //we will find the post's id and then delete it using findOneAndDelete;
@@ -102,11 +102,11 @@ export const updateUserPost = async (req, res) => {
         const { id } = req.params;
 
         //id validation;
-        if (!id) {
+        if (!mongoose.isObjectIdOrHexString(id)) {
             return res.status(400).json({
                 status: "Failed",
-                message: "Id is not found or not in expected forma"
-            })
+                message: "Invalid ID format"
+            });
         }
 
         //fetch user's new post's content;

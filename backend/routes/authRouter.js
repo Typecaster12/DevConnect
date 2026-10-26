@@ -1,5 +1,5 @@
 import express from "express";
-import { logoutFromAll, refreshToken, registerNewUser, userLogin, userLogout } from "../controllers/authController.js";
+import { logoutFromAll, refreshToken, registerNewUser, userLogin, userLogout } from "../controllers/auth.controller.js";
 import { authLoginLimiter, authRegLimiter } from "../middleware/authLimiter.js";
 import { authLoginThrottle, authRegThrottle } from "../middleware/authThrottel.js";
 
