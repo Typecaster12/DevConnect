@@ -6,7 +6,7 @@ import {
     Users,
     Bell,
     Settings,
-    User,
+    LogOut,
 } from "lucide-react";
 import { useContext } from "react";
 import { AuthContext } from "@/context/AuthContext";
@@ -31,6 +31,11 @@ const mobileLinks = [
         label: "Settings",
         path: "/settings",
         icon: Settings,
+    },
+    {
+        label: "Log out",
+        path: "/logout",
+        icon: LogOut,
     },
 ];
 
