@@ -1,5 +1,6 @@
 import Post from "../models/Posts.model.js";
 import User from "../models/Users.model.js";
+import Follow from "../models/Follow.model.js";
 
 export const fetchPost = async (req, res) => {
     try {
@@ -161,6 +162,17 @@ export const getLoggedUserProfile = async (req, res) => {
         const postCount = await Post.countDocuments({
             author: thisUser._id
         });
+
+        //for followers and following count;
+        const followerCount = await Follow.countDocuments({
+            following: thisUser._id
+        });
+
+        const followingCount = await Follow.countDocuments({
+            follower: thisUser._id
+        });
+
+
         // console.log("Post by User: ", postCount);
 
         res.status(200).json({
@@ -172,7 +184,9 @@ export const getLoggedUserProfile = async (req, res) => {
 
                 stats: {
                     ...thisUser.stats,
-                    posts: postCount
+                    posts: postCount,
+                    followers: followerCount,
+                    following: followingCount
                 }
             }
         })

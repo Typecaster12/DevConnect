@@ -26,7 +26,7 @@ app.use("/api", apiLimiter, apiThrottle);
 //routes
 app.use("/auth", authRouter);
 app.use("/api", router);
-app.use("/user", followRouter)
+app.use("/user", followRouter);
 
 //wildcard route;
 app.use((req, res) => {

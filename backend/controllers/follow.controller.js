@@ -135,3 +135,56 @@ export const unFollowRelation = async (req, res) => {
         })
     }
 }
+
+//more logic to impelement => when Harsh opens Khushi's profile, the API returns isFollowing: true or false.
+
+export const isFollowingUser = async (req, res) => {
+    try {
+        //middleware already validate this;
+        const followerId = req.user.id;
+
+        const followingId = req.params.id;
+        //id validation;
+        if (!followingId || !mongoose.isObjectIdOrHexString(followingId)) {
+            return res.status(400).json({
+                status: "Failed",
+                message: "Invalid ID format or User id not found"
+            });
+        }
+
+        //check if this user even present in our db;
+        const isUserPresent = await User.findById(followingId);
+        if (!isUserPresent) {
+            return res.status(404).json({
+                status: "Failed",
+                message: "User Not found"
+            })
+        }
+
+        //find their relation, if present;
+        const relation = await Follow.findOne({
+            follower: followerId,
+            following: followingId
+        });
+
+        if (!relation) {
+            return res.status(200).json({
+                status: "Success",
+                message: "Relation not found",
+                isFollowing: false
+            });
+        }
+
+        res.status(200).json({
+            status: "Success",
+            message: "Relation found",
+            isFollowing: true
+        });
+
+    } catch (err) {
+        res.status(500).json({
+            status: "Failed",
+            error: err.message,
+        })
+    }
+}
