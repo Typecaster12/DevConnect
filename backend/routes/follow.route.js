@@ -8,6 +8,6 @@ followRouter.use(authMiddleWare);
 
 followRouter.post("/follow/:id", followRelation);
 followRouter.post("/unfollow/:id", unFollowRelation);
-followRouter.post("/isFollowing/:id", isFollowingUser);
+followRouter.get("/isFollowing/:id", isFollowingUser);
 
 export default followRouter;

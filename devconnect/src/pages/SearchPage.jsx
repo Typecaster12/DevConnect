@@ -1,5 +1,6 @@
 import { Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
+import SearchResultCard from "@/components/SearchResultCard";
 import { useContext, useEffect, useState } from "react";
 import { searchUsers } from "@/Api/searchUsers";
 import { AuthContext } from "@/context/AuthContext";
@@ -26,7 +27,7 @@ const SearchPage = () => {
 
     try {
       const resultUsers = await searchUsers(debouncedQuery, accessToken);
-      setUsers(resultUsers.usersData || []);
+      setUsers(resultUsers.usersData || []); //.usersData is containing everything
     } catch (err) {
       setUsers([]);
       setError(err.message || "Failed to fetch users.");
@@ -98,21 +99,10 @@ const SearchPage = () => {
             )}
 
             {users.map((user) => (
-              <div
-                key={user._id}
-                className="border-b p-4 last:border-b-0"
-              >
-                <p className="font-medium">
-                  {user.personalInfo.firstName} {user.personalInfo.lastName}
-                </p>
-                <p className="text-sm text-muted-foreground">
-                  @{user.personalInfo.username}
-                </p>
-              </div>
+              <SearchResultCard key={user._id} user={user} />
             ))}
           </div>
         </div>
-
       </div>
     </main>
   );

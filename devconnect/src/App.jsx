@@ -6,6 +6,7 @@ import FeedLayout from "./components/feedLayout/FeedLayout";
 import Login from "./pages/login";
 import Logou from "./pages/logou";
 import SearchPage from "./pages/SearchPage";
+import UserProfilePage from "./pages/UserProfilePage";
 import ProfileDetails from "./components/LeftSideBar/ProfileCard/ProfileDetails";
 import { AuthContext } from "./context/AuthContext";
 
@@ -76,6 +77,10 @@ const router = createBrowserRouter([
       {
         path: "/userProfile", //view profile
         element: <ProfileDetails />
+      },
+      {
+        path: "/userProfile/:id",
+        element: <UserProfilePage />
       }
     ],
   },

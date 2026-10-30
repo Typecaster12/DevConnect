@@ -263,3 +263,60 @@ export const getMatchedUsers = async (req, res) => {
         })
     }
 }
+
+//for any individual user(search by logged-in user);
+export const individualUserDetails = async (req, res) => {
+    try {
+        //get the user's id;
+        const userId = req.params.id;
+
+        //validation;
+        if (!userId) {
+            return res.status(400).json({
+                status: "Failed",
+                message: "Id not found"
+            });
+        }
+
+        //find on the basis of id, leave the imp things like passwords;
+        const individualUser = await User.findById(userId)
+            .select("-password")
+            .lean();
+
+
+        if (!individualUser) {
+            return res.status(404).json({
+                status: "Failed",
+                message: "User not found"
+            })
+        }
+
+        //for post's followers, followings;
+        const [postCount, followersCount, followingCount] = await Promise.all([
+            Post.countDocuments({ author: userId }),
+            Follow.countDocuments({ following: userId }),
+            Follow.countDocuments({ follower: userId })
+        ]);
+
+        const userDetailsObject = {
+            ...individualUser,
+            stats: {
+                posts: postCount,
+                following: followersCount,
+                followers: followingCount
+            }
+        }
+
+        //return this as reponse;
+        res.status(200).json({
+            status: "Successfull",
+            message: "User details fetched successfully",
+            userData: userDetailsObject
+        });
+    } catch (err) {
+        return res.status(500).json({
+            status: "Failed",
+            error: err.message
+        })
+    }
+}

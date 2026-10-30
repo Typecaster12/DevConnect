@@ -54,14 +54,14 @@ export const checkIfUserFollowing = async (userId, accessToken) => {
         const response = await fetch(
             `${BASE_URL}/user/isFollowing/${userId}`,
             {
-                method: "POST",
+                method: "GET",
                 headers: {
                     Authorization: `Bearer ${accessToken}`
                 }
             }
         );
 
-        const data = response.json();
+        const data = await response.json();
         if (!response.ok) {
             throw new Error(data.message || "Error while checking");
         }
