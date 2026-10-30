@@ -1,5 +1,5 @@
 import express from 'express';
-import { createUserPost, deleteUserPost, fetchPost, getLoggedUserProfile, getMatchedUsers, individualUserDetails, updateUserPost } from '../controllers/server.controller.js';
+import { createUserPost, deleteUserPost, fetchPost, getLoggedUserProfile, getMatchedUsers, individualUserDetails, individualUserPosts, updateUserPost } from '../controllers/server.controller.js';
 import { authMiddleWare } from '../middleware/authMiddleware.js';
 
 const router = express.Router();
@@ -27,4 +27,5 @@ router.get("/searchusers", getMatchedUsers);
 
 //to get anyother user's details;
 router.get("/userProfile/:id", individualUserDetails);
+router.get("/userPosts/:id", individualUserPosts)
 export default router;

@@ -1,6 +1,7 @@
 import Post from "../models/Posts.model.js";
 import User from "../models/Users.model.js";
 import Follow from "../models/Follow.model.js";
+import mongoose from "mongoose";
 
 export const fetchPost = async (req, res) => {
     try {
@@ -270,11 +271,19 @@ export const individualUserDetails = async (req, res) => {
         //get the user's id;
         const userId = req.params.id;
 
-        //validation;
-        if (!userId) {
+        // //validation;
+        // if (!userId) {
+        //     return res.status(400).json({
+        //         status: "Failed",
+        //         message: "Id not found"
+        //     });
+        // }
+
+        //id validation;
+        if (!userId || !mongoose.isObjectIdOrHexString(userId)) {
             return res.status(400).json({
                 status: "Failed",
-                message: "Id not found"
+                message: "Invalid ID format or User id not found"
             });
         }
 
@@ -313,6 +322,46 @@ export const individualUserDetails = async (req, res) => {
             message: "User details fetched successfully",
             userData: userDetailsObject
         });
+    } catch (err) {
+        return res.status(500).json({
+            status: "Failed",
+            error: err.message
+        })
+    }
+}
+
+//for individual user's posts;
+export const individualUserPosts = async (req, res) => {
+    try {
+        const userId = req.params.id;
+
+        //id validation;
+        if (!userId || !mongoose.isObjectIdOrHexString(userId)) {
+            return res.status(400).json({
+                status: "Failed",
+                message: "Invalid ID format or User id not found"
+            });
+        }
+
+        //have to fetch all the posts of this user;
+        const usersPost = await Post.find({
+            author: userId
+        }).sort({ createdAt: -1 });
+
+        console.log("user's Posts: ", usersPost);
+
+        if (usersPost === 0) {
+            return res.status(200).json({
+                status: "Success",
+                message: "Currently user have 0 Posts"
+            });
+        }
+
+        res.status(200).json({
+            status: "Success",
+            message: "posts fetched successfully",
+            posts: usersPost //array of objects(posts);
+        })
     } catch (err) {
         return res.status(500).json({
             status: "Failed",

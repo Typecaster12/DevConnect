@@ -10,17 +10,66 @@ import {
   AvatarImage,
 } from "@/components/ui/avatar";
 import { Separator } from "@/components/ui/separator";
+import { useContext, useEffect, useState } from "react";
+import { individualUserPosts } from "@/Api/individualUser";
+import { AuthContext } from "@/context/AuthContext";
 
 const SearchUserProfile = ({ user }) => {
+  const [postsState, setPostsState] = useState({
+    userId: null,
+    posts: [],
+    error: "",
+  });
+  const { accessToken } = useContext(AuthContext);
+
   const { firstName, lastName, username, avatar, headline, bio, location } =
     user.personalInfo;
+
   const initials = `${firstName?.[0] || ""}${lastName?.[0] || ""}`.toUpperCase();
+
   const socialLinks = [
     { label: "GitHub", url: user.social?.github, icon: Code2 },
     { label: "LinkedIn", url: user.social?.linkedin, icon: BriefcaseBusiness },
     { label: "Portfolio", url: user.social?.portfolio, icon: Globe },
   ].filter((link) => link.url);
-  const posts = Array.isArray(user.posts) ? user.posts : [];
+
+  const userId = user._id;
+
+  // Fetch this user's posts when their profile is opened.
+  useEffect(() => {
+    let isCurrentRequest = true;
+
+    const fetchPosts = async () => {
+      try {
+        const result = await individualUserPosts(userId, accessToken);
+        if (isCurrentRequest) {
+          setPostsState({
+            userId,
+            posts: Array.isArray(result.posts) ? result.posts : [],
+            error: "",
+          });
+        }
+      } catch (error) {
+        if (isCurrentRequest) {
+          setPostsState({
+            userId,
+            posts: [],
+            error: error.message || "Failed to fetch user posts.",
+          });
+        }
+      }
+    };
+
+    fetchPosts();
+
+    return () => {
+      isCurrentRequest = false;
+    };
+  }, [userId, accessToken]);
+
+  const isPostsLoading = postsState.userId !== userId;
+  const usersPosts = isPostsLoading ? [] : postsState.posts;
+  const postsError = isPostsLoading ? "" : postsState.error;
 
   return (
     <div className="mx-auto w-full max-w-4xl px-4 py-8 sm:px-6 lg:py-12">
@@ -100,15 +149,23 @@ const SearchUserProfile = ({ user }) => {
 
       <Separator className="my-8" />
 
-      {/* User posts are rendered when the profile API includes them. */}
+      {/* User posts */}
       <section>
         <div className="flex items-center justify-center gap-8 text-sm font-medium">
           <h2 className="border-t-2 border-primary px-3 py-4">Posts</h2>
         </div>
 
-        {posts.length > 0 ? (
+        {isPostsLoading ? (
+          <p className="py-10 text-center text-sm text-muted-foreground">
+            Loading posts...
+          </p>
+        ) : postsError ? (
+          <p className="py-10 text-center text-sm text-destructive">
+            {postsError}
+          </p>
+        ) : usersPosts.length > 0 ? (
           <div className="space-y-5">
-            {posts.map((post) => (
+            {usersPosts.map((post) => (
               <article
                 key={post._id}
                 className="rounded-2xl border bg-card p-5 shadow-sm"
@@ -144,9 +201,9 @@ const SearchUserProfile = ({ user }) => {
           </div>
         ) : (
           <div className="flex min-h-56 flex-col items-center justify-center gap-3 rounded-xl border border-dashed border-border px-6 py-10 text-center">
-            <h3 className="text-lg font-semibold">Posts</h3>
+            <h3 className="text-lg font-semibold">No posts yet</h3>
             <p className="max-w-sm text-sm leading-6 text-muted-foreground">
-              This user&apos;s posts will appear here when they are available.
+              This user&apos;s posts will appear here when they share them.
             </p>
           </div>
         )}
