@@ -303,8 +303,8 @@ export const individualUserDetails = async (req, res) => {
         //for post's followers, followings;
         const [postCount, followersCount, followingCount] = await Promise.all([
             Post.countDocuments({ author: userId }),
-            Follow.countDocuments({ following: userId }),
-            Follow.countDocuments({ follower: userId })
+            Follow.countDocuments({ follower: userId }),
+            Follow.countDocuments({ following: userId })
         ]);
 
         const userDetailsObject = {
@@ -348,7 +348,6 @@ export const individualUserPosts = async (req, res) => {
             author: userId
         }).sort({ createdAt: -1 });
 
-        console.log("user's Posts: ", usersPost);
 
         if (usersPost === 0) {
             return res.status(200).json({

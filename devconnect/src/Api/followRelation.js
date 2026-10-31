@@ -66,7 +66,7 @@ export const checkIfUserFollowing = async (userId, accessToken) => {
             throw new Error(data.message || "Error while checking");
         }
 
-        return data; //isFollowing is the required data
+        return data; //isFollowing is the required data, either true or false
     } catch (err) {
         console.error("Some error occured, while checking", err);
         throw err;

@@ -3,6 +3,9 @@ import {
   Code2,
   Globe,
   MapPin,
+  MessageCircle,
+  UserMinus,
+  UserPlus,
 } from "lucide-react";
 import {
   Avatar,
@@ -12,6 +15,12 @@ import {
 import { Separator } from "@/components/ui/separator";
 import { useContext, useEffect, useState } from "react";
 import { individualUserPosts } from "@/Api/individualUser";
+import {
+  checkIfUserFollowing,
+  followUser,
+  unFollowUser,
+} from "@/Api/followRelation";
+import { Button } from "@/components/ui/button";
 import { AuthContext } from "@/context/AuthContext";
 
 const SearchUserProfile = ({ user }) => {
@@ -20,7 +29,16 @@ const SearchUserProfile = ({ user }) => {
     posts: [],
     error: "",
   });
-  const { accessToken } = useContext(AuthContext);
+  const [followState, setFollowState] = useState({
+    userId: null,
+    isFollowing: false,
+    initialIsFollowing: false,
+    statusKnown: false,
+    isLoading: true,
+    error: "",
+  });
+  const { accessToken, loggedUser, refreshLoggedUserData } =
+    useContext(AuthContext);
 
   const { firstName, lastName, username, avatar, headline, bio, location } =
     user.personalInfo;
@@ -34,6 +52,7 @@ const SearchUserProfile = ({ user }) => {
   ].filter((link) => link.url);
 
   const userId = user._id;
+  const isOwnProfile = loggedUser?._id === userId;
 
   // Fetch this user's posts when their profile is opened.
   useEffect(() => {
@@ -67,9 +86,123 @@ const SearchUserProfile = ({ user }) => {
     };
   }, [userId, accessToken]);
 
+  // Check whether the logged-in user already follows this profile.
+  useEffect(() => {
+    let isCurrentRequest = true;
+
+    const checkFollowStatus = async () => {
+      try {
+        const result = await checkIfUserFollowing(userId, accessToken);
+        if (typeof result.isFollowing !== "boolean") {
+          throw new Error("Unable to determine follow status.");
+        }
+
+        if (isCurrentRequest) {
+          setFollowState({
+            userId,
+            isFollowing: result.isFollowing,
+            initialIsFollowing: result.isFollowing,
+            statusKnown: true,
+            isLoading: false,
+            error: "",
+          });
+        }
+      } catch (error) {
+        if (isCurrentRequest) {
+          setFollowState({
+            userId,
+            isFollowing: false,
+            initialIsFollowing: false,
+            statusKnown: false,
+            isLoading: false,
+            error: error.message || "Failed to check follow status.",
+          });
+        }
+      }
+    };
+
+    checkFollowStatus();
+
+    return () => {
+      isCurrentRequest = false;
+    };
+  }, [userId, accessToken]);
+
+  const handleFollowChange = async () => {
+    const nextFollowingState = !followState.isFollowing;
+
+    setFollowState((currentState) => ({
+      ...currentState,
+      isLoading: true,
+      error: "",
+    }));
+
+    try {
+      if (nextFollowingState) {
+        await followUser(userId, accessToken);
+      } else {
+        await unFollowUser(userId, accessToken);
+      }
+    } catch (error) {
+      setFollowState((currentState) => {
+        if (currentState.userId !== userId) return currentState;
+
+        return {
+          ...currentState,
+          isLoading: false,
+          error: error.message || "Unable to update follow status.",
+        };
+      });
+      return;
+    }
+
+    setFollowState((currentState) => {
+      if (currentState.userId !== userId) return currentState;
+
+      return {
+        ...currentState,
+        isFollowing: nextFollowingState,
+        error: "",
+      };
+    });
+
+    // Refresh the logged-in user's profile counts after following or unfollowing.
+    try {
+      await refreshLoggedUserData();
+    } catch (error) {
+      console.error("Follow status updated, but profile refresh failed:", error);
+      setFollowState((currentState) => {
+        if (currentState.userId !== userId) return currentState;
+
+        return {
+          ...currentState,
+          isLoading: false,
+          error: "Follow updated, but your profile stats could not be refreshed.",
+        };
+      });
+      return;
+    }
+
+    setFollowState((currentState) => {
+      if (currentState.userId !== userId) return currentState;
+
+      return {
+        ...currentState,
+        isLoading: false,
+      };
+    });
+  };
+
   const isPostsLoading = postsState.userId !== userId;
   const usersPosts = isPostsLoading ? [] : postsState.posts;
   const postsError = isPostsLoading ? "" : postsState.error;
+  const isFollowLoading =
+    followState.userId !== userId || followState.isLoading;
+  const displayedFollowerCount =
+    (user.stats?.followers ?? 0) +
+    (followState.userId === userId
+      ? Number(followState.isFollowing) - Number(followState.initialIsFollowing)
+      : 0);
 
   return (
     <div className="mx-auto w-full max-w-4xl px-4 py-8 sm:px-6 lg:py-12">
@@ -101,7 +234,7 @@ const SearchUserProfile = ({ user }) => {
               <span className="text-muted-foreground">posts</span>
             </p>
             <p>
-              <span className="font-semibold">{user.stats?.followers ?? 0}</span>{" "}
+              <span className="font-semibold">{displayedFollowerCount}</span>{" "}
               <span className="text-muted-foreground">followers</span>
             </p>
             <p>
@@ -143,6 +276,46 @@ const SearchUserProfile = ({ user }) => {
                 </div>
               )}
             </div>
+          )}
+
+          {!isOwnProfile && (
+            <div className="flex flex-col gap-3 sm:flex-row">
+              <Button
+                type="button"
+                onClick={handleFollowChange}
+                disabled={isFollowLoading || !followState.statusKnown}
+              >
+                {isFollowLoading ? (
+                  "Checking..."
+                ) : !followState.statusKnown ? (
+                  "Unavailable"
+                ) : followState.isFollowing ? (
+                  <>
+                    <UserMinus />
+                    Unfollow
+                  </>
+                ) : (
+                  <>
+                    <UserPlus />
+                    Follow
+                  </>
+                )}
+              </Button>
+              <Button
+                type="button"
+                variant="secondary"
+                disabled
+                title="Messaging will be available in a future update."
+              >
+                <MessageCircle />
+                Message
+              </Button>
+            </div>
+          )}
+          {followState.error && followState.userId === userId && (
+            <p className="text-sm text-destructive" role="alert">
+              {followState.error}
+            </p>
           )}
         </div>
       </section>
