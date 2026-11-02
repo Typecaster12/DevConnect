@@ -2,6 +2,7 @@
 const BASE_URL = "http://localhost:5000";
 
 //to get existing posts of the users;
+//fetch all the user's posts(followers+following);
 export const fetchUserPost = async (accessToken) => {
     try {
 
@@ -106,3 +107,26 @@ export const updateUserPost = async (postId, newPostContent, accessToken) => {
         throw error;
     }
 };
+
+
+export const CurrentUserPosts = async(accessToken) => {
+    try {
+
+        const response = await fetch(`${BASE_URL}/api/loggedUserPosts`, {
+            headers: {
+                Authorization: `Bearer ${accessToken}`
+            }
+        });
+
+        //exception
+        if (!response.ok) {
+            throw new Error("Failed to fetch posts.");
+        }
+        const data = await response.json();
+        return data;
+
+    } catch (error) {
+        console.error("Error Fetching Posts:", error);
+        throw error;
+    }
+}

@@ -1,5 +1,5 @@
 
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 import {
     Settings,
     MapPin,
@@ -20,19 +20,81 @@ import {
 import { Separator } from "@/components/ui/separator";
 import { AuthContext } from "@/context/AuthContext";
 import FeedList from "@/components/feedLayout/Feed/FeedList";
-import { deleteUserPost, updateUserPost } from "@/Api/postApi";
+import {
+    CurrentUserPosts,
+    deleteUserPost,
+    updateUserPost,
+} from "@/Api/postApi";
 
 const ProfileDetails = () => {
     // const { loggedUser, accessToken } = useContext(AuthContext);
-    const { accessToken, refreshLoggedUserData, posts, isLoading, refreshData, loggedUser } = useContext(AuthContext);
+    const {
+        accessToken,
+        refreshLoggedUserData,
+        isLoading,
+        refreshData,
+        loggedUser,
+    } = useContext(AuthContext);
+    const [profilePosts, setProfilePosts] = useState([]);
+    const [profilePostsLoading, setProfilePostsLoading] = useState(true);
+    const [profilePostsError, setProfilePostsError] = useState("");
+
+    useEffect(() => {
+        let isCurrentRequest = true;
+
+        const fetchProfilePosts = async () => {
+            setProfilePostsLoading(true);
+            setProfilePostsError("");
+
+            try {
+                const result = await CurrentUserPosts(accessToken);
+                if (!Array.isArray(result.posts)) {
+                    throw new Error("Unexpected response while fetching posts.");
+                }
+
+                if (isCurrentRequest) {
+                    setProfilePosts(result.posts);
+                }
+            } catch (error) {
+                if (isCurrentRequest) {
+                    setProfilePostsError(
+                        error.message || "Failed to fetch your posts."
+                    );
+                }
+            } finally {
+                if (isCurrentRequest) {
+                    setProfilePostsLoading(false);
+                }
+            }
+        };
+
+        if (accessToken) {
+            fetchProfilePosts();
+        }
+
+        return () => {
+            isCurrentRequest = false;
+        };
+    }, [accessToken]);
+
+    const refreshProfilePosts = async () => {
+        try {
+            const result = await CurrentUserPosts(accessToken);
+            if (!Array.isArray(result.posts)) {
+                throw new Error("Unexpected response while fetching posts.");
+            }
+            setProfilePosts(result.posts);
+            setProfilePostsError("");
+        } catch (error) {
+            setProfilePostsError(error.message || "Failed to fetch your posts.");
+            throw error;
+        }
+    };
 
 
     const initials = `${loggedUser?.personalInfo.firstName?.[0] || ""}${loggedUser?.personalInfo.lastName?.[0] || ""}`
         .toUpperCase();
 
-
-    //check for number of posts;
-    const hasPosts = (loggedUser?.stats?.posts ?? 0) > 0;
 
     //function to handle post deletion;
     const handleDeletePost = async (postId) => {
@@ -42,6 +104,7 @@ const ProfileDetails = () => {
             //ask parent to fetch latest posts + user profile;
             await refreshData();
             await refreshLoggedUserData();
+            await refreshProfilePosts();
         } catch (error) {
             console.error("Error deleting post: ", error);
         }
@@ -54,6 +117,7 @@ const ProfileDetails = () => {
 
             //ask parent to fetch latest posts + user profile;
             await refreshData();
+            await refreshProfilePosts();
 
         } catch (error) {
             console.error("Error updating post: ", error);
@@ -221,10 +285,17 @@ const ProfileDetails = () => {
                     </button>
                 </div>
 
-                {/* Conditionally render posts or empty state */}
-                {hasPosts ? (
+                {isLoading || profilePostsLoading ? (
+                    <p className="py-10 text-center text-sm text-muted-foreground">
+                        Loading posts...
+                    </p>
+                ) : profilePostsError ? (
+                    <p className="py-10 text-center text-sm text-destructive" role="alert">
+                        {profilePostsError}
+                    </p>
+                ) : profilePosts.length > 0 ? (
                     <FeedList
-                        posts={posts}
+                        posts={profilePosts}
                         onDeleteUserPost={handleDeletePost}
                         onUpdateUserPost={handleUpdatePost}
                     />

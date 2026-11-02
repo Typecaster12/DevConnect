@@ -3,12 +3,35 @@ import User from "../models/Users.model.js";
 import Follow from "../models/Follow.model.js";
 import mongoose from "mongoose";
 
+//will fetch all the posts;
 export const fetchPost = async (req, res) => {
     try {
+        //we will find posts of logged user and the users whome logged user follows;
+        //for getting the other user's id;
+
+        //we will find those users only whome logged-in user follows, thats why we find documents based on logged user's id;
+        const otherUsers = await Follow.find({
+            follower: req.user.id
+        });
+
+        if (!otherUsers) {
+            return res.status(404).json({
+                status: "Failed",
+                message: "Something went wrong"
+            });
+        }
+
+        //this array will contains all the other user's id;
+        const followingIds = otherUsers.map((item) => item.following);
+
+        //push logged-in user's id in this array
+        //so that we can get mix feed;
+        followingIds.push(req.user.id);
+
         //find from the post;
         const posts = await Post.find({
             // author: loggedUser
-            author: req.user.id
+            author: { $in: followingIds } //$in is to get post based on multiple id's
         })
             .populate("author")
             .sort({ createdAt: -1 });
@@ -361,6 +384,36 @@ export const individualUserPosts = async (req, res) => {
             message: "posts fetched successfully",
             posts: usersPost //array of objects(posts);
         })
+    } catch (err) {
+        return res.status(500).json({
+            status: "Failed",
+            error: err.message
+        })
+    }
+}
+
+//endpoint, that will only fetch current user's posts only;
+export const fetchCurrentUserPosts = async (req, res) => {
+    try {
+        const posts = await Post.find({
+            author: req.user.id //logged user's id
+        })
+            .populate("author")
+            .sort({ createdAt: -1 });
+
+
+        if(!posts){
+            return res.status(200).json({
+                status:"Success",
+                message:"User have no post currently"
+            });
+        }
+        
+        res.status(200).json({
+            status: "Success",
+            length: posts.length,
+            posts
+        });
     } catch (err) {
         return res.status(500).json({
             status: "Failed",
