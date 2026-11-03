@@ -3,6 +3,7 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import Sessions from "../models/Session.model.js";
 import crypto from "crypto";
+import { getErrorMessage } from "../utils/errors.js";
 // import { token } from "morgan";
 
 //for new registration;
@@ -65,7 +66,7 @@ export const registerNewUser = async (req, res) => {
     } catch (err) {
         res.status(500).json({
             status: "Failed",
-            message: err.message,
+            message: getErrorMessage(err),
         })
     }
 };
@@ -165,7 +166,7 @@ export const userLogin = async (req, res) => {
     } catch (err) {
         res.status(500).json({
             status: "Failed",
-            message: err.message,
+            message: getErrorMessage(err),
         })
     }
 }
@@ -226,7 +227,7 @@ export const userLogout = async (req, res) => {
     } catch (err) {
         res.status(500).json({
             status: "Failed",
-            message: err.message
+            message: getErrorMessage(err)
         })
     }
 }
@@ -321,7 +322,7 @@ export const refreshToken = async (req, res) => {
     } catch (err) {
         res.status(500).json({
             status: "Failed",
-            message: err.message,
+            message: getErrorMessage(err),
         })
     }
 };
@@ -361,7 +362,7 @@ export const logoutFromAll = async (req, res) => {
     } catch (err) {
         res.status(500).json({
             status: "Failed",
-            message: err.message,
+            message: getErrorMessage(err),
         })
     }
 

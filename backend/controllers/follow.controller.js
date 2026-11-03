@@ -1,5 +1,6 @@
 import Follow from "../models/Follow.model.js";
 import User from "../models/Users.model.js";
+import { getErrorMessage } from "../utils/errors.js";
 
 //will take req.user.id, for follower;
 //and req.params.id, for following;
@@ -66,7 +67,7 @@ export const followRelation = async (req, res) => {
         }
         res.status(500).json({
             status: "Failed",
-            error: err.message,
+            error: getErrorMessage(err),
         })
     }
 }
@@ -112,7 +113,7 @@ export const unFollowRelation = async (req, res) => {
     } catch (err) {
         res.status(500).json({
             status: "Failed",
-            error: err.message,
+            error: getErrorMessage(err),
         })
     }
 }
@@ -164,7 +165,7 @@ export const isFollowingUser = async (req, res) => {
     } catch (err) {
         res.status(500).json({
             status: "Failed",
-            error: err.message,
+            error: getErrorMessage(err),
         })
     }
 }

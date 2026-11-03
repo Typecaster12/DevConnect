@@ -1,6 +1,7 @@
 import Post from "../models/Posts.model.js";
 import User from "../models/Users.model.js";
 import Follow from "../models/Follow.model.js";
+import { getErrorMessage } from "../utils/errors.js";
 
 //will fetch all the posts;
 export const fetchPost = async (req, res) => {
@@ -43,7 +44,7 @@ export const fetchPost = async (req, res) => {
     } catch (err) {
         return res.status(500).json({
             status: "Failed",
-            error: err.message
+            error: getErrorMessage(err)
         })
     }
 }
@@ -75,7 +76,7 @@ export const createUserPost = async (req, res) => {
     } catch (err) {
         res.status(500).json({
             status: "Failed",
-            error: err.message
+            error: getErrorMessage(err)
         });
     }
 };
@@ -114,7 +115,7 @@ export const deleteUserPost = async (req, res) => {
     } catch (err) {
         res.status(500).json({
             status: "Failed",
-            error: err.message,
+            error: getErrorMessage(err),
         })
     }
 }
@@ -159,7 +160,7 @@ export const updateUserPost = async (req, res) => {
     } catch (err) {
         res.status(500).json({
             status: "Failed",
-            error: err.message,
+            error: getErrorMessage(err),
         })
     }
 }
@@ -215,7 +216,7 @@ export const getLoggedUserProfile = async (req, res) => {
     } catch (err) {
         return res.status(500).json({
             status: "Failed",
-            error: err.message
+            error: getErrorMessage(err)
         })
     }
 }
@@ -280,7 +281,7 @@ export const getMatchedUsers = async (req, res) => {
     } catch (err) {
         return res.status(500).json({
             status: "Failed",
-            error: err.message
+            error: getErrorMessage(err)
         })
     }
 }
@@ -336,7 +337,7 @@ export const individualUserDetails = async (req, res) => {
     } catch (err) {
         return res.status(500).json({
             status: "Failed",
-            error: err.message
+            error: getErrorMessage(err)
         })
     }
 }
@@ -375,7 +376,7 @@ export const individualUserPosts = async (req, res) => {
     } catch (err) {
         return res.status(500).json({
             status: "Failed",
-            error: err.message
+            error: getErrorMessage(err)
         })
     }
 }
@@ -406,7 +407,7 @@ export const fetchCurrentUserPosts = async (req, res) => {
     } catch (err) {
         return res.status(500).json({
             status: "Failed",
-            error: err.message
+            error: getErrorMessage(err)
         })
     }
 }

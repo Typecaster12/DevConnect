@@ -147,7 +147,7 @@ The app is designed around a developer-centric social feed experience, where use
 ## Getting Started
 
 ### Prerequisites
-- Node.js 18+
+- Node.js 20.19+
 - npm or yarn
 - MongoDB instance or MongoDB Atlas connection
 - Git
@@ -168,8 +168,9 @@ The app is designed around a developer-centric social feed experience, where use
    ```env
    PORT=5000
    MONGO_URI=mongodb://localhost:27017/devconnect
-   JWT_SECRET=your_super_secret_key
+   JWT_SECRET=your_random_secret_at_least_32_bytes_long
    NODE_ENV=development
+   CORS_ORIGIN=http://localhost:5173
    ```
 
 4. Start the backend:
@@ -213,6 +214,20 @@ npm run build
 cd backend
 npm start
 ```
+
+## Deploying the Backend to Render
+
+The root `render.yaml` configures the backend service, installs dependencies with
+`npm ci`, starts it with `npm start`, and uses `/health` for service health checks.
+Configure `MONGO_URI` and a strong `JWT_SECRET` (at least 32 bytes) as Render
+environment variables. After deploying the frontend, set `CORS_ORIGIN` in the
+backend's Render environment to its exact origin; multiple origins can be
+comma-separated. Until it is set, browser-origin requests are not allowed in
+production.
+
+The health endpoint reports whether the API can reach MongoDB. Health checks are
+for monitoring and deployment readiness; they do not prevent an instance on a
+suspended/free plan from sleeping.
 
 ## Environment Notes
 
