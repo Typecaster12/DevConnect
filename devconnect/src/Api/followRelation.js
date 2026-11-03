@@ -1,4 +1,4 @@
-const BASE_URL = "http://localhost:5000";
+import BASE_URL from "./config.js";
 
 export const followUser = async (userId, accessToken) => {
     try {

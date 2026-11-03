@@ -1,7 +1,7 @@
 //this layer is directly communicating with backend's api
 //and then our context will use this
 //here we will have loginUser(), regisgteruser(), logoutUser(), 
-const BASE_URL = "http://localhost:5000";
+import BASE_URL from "./config.js";
 
 export const loginUser = async (email, password) => {
     try {

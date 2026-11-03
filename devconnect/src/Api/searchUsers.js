@@ -1,4 +1,4 @@
-const BASE_URL = "http://localhost:5000";
+import BASE_URL from "./config.js";
 
 //accessToken as we have protected api's, so login required for even searching
 //publiclly available pages are only login, reg;

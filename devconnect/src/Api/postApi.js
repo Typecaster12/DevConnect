@@ -1,5 +1,5 @@
 //to fetch the post already exixts from express;\
-const BASE_URL = "http://localhost:5000";
+import BASE_URL from "./config.js";
 
 //to get existing posts of the users;
 //fetch all the user's posts(followers+following);

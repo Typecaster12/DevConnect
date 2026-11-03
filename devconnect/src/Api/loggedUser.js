@@ -1,4 +1,4 @@
-const BASE_URL = "http://localhost:5000";
+import BASE_URL from "./config.js";
 
 //this is basically fetching the users from database, after the sucessfull registration of the user;
 //after login(to confirm the credentils) when we get the jwt of user, using that we will get the user's data from this api function
