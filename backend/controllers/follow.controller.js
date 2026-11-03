@@ -1,4 +1,3 @@
-import mongoose from "mongoose";
 import Follow from "../models/Follow.model.js";
 import User from "../models/Users.model.js";
 
@@ -7,22 +6,13 @@ import User from "../models/Users.model.js";
 
 export const followRelation = async (req, res) => {
     try {
-        const followerId = req.user.id;
-        //id validation;
-        if (!mongoose.isObjectIdOrHexString(followerId)) {
+        const followerId = req.user?.id;
+        const followingId = req.params?.id;
+
+        if (!followerId || !followingId) {
             return res.status(400).json({
                 status: "Failed",
-                message: "Invalid ID format"
-            });
-        }
-
-        const followingId = req.params.id;
-
-        //id validation;
-        if (!followingId || !mongoose.isObjectIdOrHexString(followingId)) {
-            return res.status(400).json({
-                status: "Failed",
-                message: "Invalid ID format or User id not found"
+                message: "Required user id not found"
             });
         }
 
@@ -83,22 +73,13 @@ export const followRelation = async (req, res) => {
 
 export const unFollowRelation = async (req, res) => {
     try {
-        const followerId = req.user.id;
+        const followerId = req.user?.id;
+        const followingId = req.params?.id;
 
-        if (!mongoose.isObjectIdOrHexString(followerId)) {
+        if (!followerId || !followingId) {
             return res.status(400).json({
                 status: "Failed",
-                message: "Invalid ID format"
-            });
-        }
-
-        const followingId = req.params.id;
-
-        //id validation;
-        if (!followingId || !mongoose.isObjectIdOrHexString(followingId)) {
-            return res.status(400).json({
-                status: "Failed",
-                message: "Invalid ID format or User id not found"
+                message: "Required user id not found"
             });
         }
 
@@ -140,15 +121,14 @@ export const unFollowRelation = async (req, res) => {
 
 export const isFollowingUser = async (req, res) => {
     try {
-        //middleware already validate this;
-        const followerId = req.user.id;
+        const followerId = req.user?.id;
 
-        const followingId = req.params.id;
-        //id validation;
-        if (!followingId || !mongoose.isObjectIdOrHexString(followingId)) {
+        const followingId = req.params?.id;
+
+        if (!followerId || !followingId) {
             return res.status(400).json({
                 status: "Failed",
-                message: "Invalid ID format or User id not found"
+                message: "Required user id not found"
             });
         }
 

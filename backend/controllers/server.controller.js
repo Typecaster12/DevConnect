@@ -1,7 +1,6 @@
 import Post from "../models/Posts.model.js";
 import User from "../models/Users.model.js";
 import Follow from "../models/Follow.model.js";
-import mongoose from "mongoose";
 
 //will fetch all the posts;
 export const fetchPost = async (req, res) => {
@@ -85,13 +84,12 @@ export const createUserPost = async (req, res) => {
 export const deleteUserPost = async (req, res) => {
     try {
         //first get the id of the post;
-        const { id } = req.params;
+        const id = req.params?.id;
 
-        //id validation;
-        if (!mongoose.isObjectIdOrHexString(id)) {
+        if (!id) {
             return res.status(400).json({
                 status: "Failed",
-                message: "Invalid ID format"
+                message: "Post id not found"
             });
         }
 
@@ -124,13 +122,12 @@ export const deleteUserPost = async (req, res) => {
 
 export const updateUserPost = async (req, res) => {
     try {
-        const { id } = req.params;
+        const id = req.params?.id;
 
-        //id validation;
-        if (!mongoose.isObjectIdOrHexString(id)) {
+        if (!id) {
             return res.status(400).json({
                 status: "Failed",
-                message: "Invalid ID format"
+                message: "Post id not found"
             });
         }
 
@@ -292,21 +289,12 @@ export const getMatchedUsers = async (req, res) => {
 export const individualUserDetails = async (req, res) => {
     try {
         //get the user's id;
-        const userId = req.params.id;
+        const userId = req.params?.id;
 
-        // //validation;
-        // if (!userId) {
-        //     return res.status(400).json({
-        //         status: "Failed",
-        //         message: "Id not found"
-        //     });
-        // }
-
-        //id validation;
-        if (!userId || !mongoose.isObjectIdOrHexString(userId)) {
+        if (!userId) {
             return res.status(400).json({
                 status: "Failed",
-                message: "Invalid ID format or User id not found"
+                message: "User id not found"
             });
         }
 
@@ -354,15 +342,15 @@ export const individualUserDetails = async (req, res) => {
 }
 
 //for individual user's posts;
+//this is for fetching other user's post on their profile when logged user visit their profile
 export const individualUserPosts = async (req, res) => {
     try {
-        const userId = req.params.id;
+        const userId = req.params?.id;
 
-        //id validation;
-        if (!userId || !mongoose.isObjectIdOrHexString(userId)) {
+        if (!userId) {
             return res.status(400).json({
                 status: "Failed",
-                message: "Invalid ID format or User id not found"
+                message: "User id not found"
             });
         }
 
@@ -393,6 +381,7 @@ export const individualUserPosts = async (req, res) => {
 }
 
 //endpoint, that will only fetch current user's posts only;
+//for logged-user's inidvidual posts
 export const fetchCurrentUserPosts = async (req, res) => {
     try {
         const posts = await Post.find({
@@ -402,13 +391,13 @@ export const fetchCurrentUserPosts = async (req, res) => {
             .sort({ createdAt: -1 });
 
 
-        if(!posts){
+        if (!posts) {
             return res.status(200).json({
-                status:"Success",
-                message:"User have no post currently"
+                status: "Success",
+                message: "User have no post currently"
             });
         }
-        
+
         res.status(200).json({
             status: "Success",
             length: posts.length,

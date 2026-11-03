@@ -1,33 +1,76 @@
+
 import express from 'express';
-import { createUserPost, deleteUserPost, fetchCurrentUserPosts, fetchPost, getLoggedUserProfile, getMatchedUsers, individualUserDetails, individualUserPosts, updateUserPost } from '../controllers/server.controller.js';
+
+import {
+    createUserPost,
+    deleteUserPost,
+    fetchCurrentUserPosts,
+    fetchPost,
+    getLoggedUserProfile,
+    getMatchedUsers,
+    individualUserDetails,
+    individualUserPosts,
+    updateUserPost
+} from '../controllers/server.controller.js';
+
 import { authMiddleWare } from '../middleware/authMiddleware.js';
+import { validateRequest } from '../middleware/reqValidators/reqValidate.js';
+
+import {
+    createPostSchema,
+    updatePostSchema,
+    postIdSchema
+} from '../validators/post.validator.js';
 
 const router = express.Router();
 
-//here every route requires jwt verification thats why we are using authMiddleware globally
-//but in authRouter we cannot use it globally;
+// Global JWT verification
 router.use(authMiddleWare);
 
+// Fetch posts
 router.get("/posts", fetchPost);
 router.get("/loggedUserPosts", fetchCurrentUserPosts);
 
-router.post("/posts", createUserPost);
+// Create post
+router.post(
+    "/posts",
+    validateRequest(createPostSchema),
+    createUserPost
+);
 
-//for delete post;
-//id will be of the post whicch will be clicked for removal;
-router.delete("/posts/:id", deleteUserPost);
+// Delete post
+router.delete(
+    "/posts/:id",
+    validateRequest(postIdSchema, "params"),
+    deleteUserPost
+);
 
-//for update functionality
-router.patch("/posts/:id", updateUserPost);
+// Update post
+router.patch(
+    "/posts/:id",
+    validateRequest(postIdSchema, "params"),
+    validateRequest(updatePostSchema),
+    updateUserPost
+);
 
-//for logged user profile(get);
+// Logged-in user's profile
 router.get("/user", getLoggedUserProfile);
 
-//for search functionality;
+// Search users
 router.get("/searchusers", getMatchedUsers);
 
-//to get anyother user's details;
-router.get("/userProfile/:id", individualUserDetails);
-router.get("/userPosts/:id", individualUserPosts);
+// Other user's details
+router.get(
+    "/userProfile/:id",
+    validateRequest(postIdSchema, "params"),
+    individualUserDetails
+);
+
+// Other user's posts
+router.get(
+    "/userPosts/:id",
+    validateRequest(postIdSchema, "params"),
+    individualUserPosts
+);
 
 export default router;

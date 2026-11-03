@@ -4,8 +4,8 @@ import morgan from "morgan";
 import router from "./routes/router.js";
 import authRouter from "./routes/authRouter.js";
 import cookieParser from "cookie-parser";
-import { apiLimiter } from "./middleware/userEndPointsLimiter.js";
-import { apiThrottle } from "./middleware/userEndPThrottel.js";
+import { apiLimiter } from "./middleware/rateLimiters/userEndPointsLimiter.js";
+import { apiThrottle } from "./middleware/reqThrottel/userEndPThrottel.js";
 import followRouter from "./routes/follow.route.js";
 
 const app = express();

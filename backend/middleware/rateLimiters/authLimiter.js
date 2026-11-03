@@ -1,9 +1,10 @@
 
 import { rateLimit } from "express-rate-limit";
 
+//this is working as a brute-force protection layer;
 export const authLoginLimiter = rateLimit({
     windowMs: 15 * 60 * 1000, //15 min
-    limit: 10, //5 req, per ip, per window
+    limit: 5, //5 req, per ip, per window
 
     standardHeaders: true,
     legacyHeaders: false,
@@ -17,6 +18,7 @@ export const authLoginLimiter = rateLimit({
     },
 });
 
+//also a brute-force protection layer;
 export const authRegLimiter = rateLimit({
     windowMs: 15 * 60 * 1000,
     limit: 5,
